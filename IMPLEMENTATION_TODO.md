@@ -170,23 +170,23 @@
 - [ ] **AC-02** Organization and storage depth can be configured while mandatory minimums remain valid.
 - [ ] **AC-03** Disabling levels preserves historical data.
 - [ ] **AC-04** Posted ledger effects are immutable and reversible only by reversing document.
-- [ ] **AC-05** Document creation is idempotent.
-- [ ] **AC-06** Party/source polymorphic references work without external FKs.
-- [ ] **AC-07** Non-stock and service lines do not affect inventory ledger.
-- [ ] **AC-08** Costing scope changes grouping without schema changes.
+- [x] **AC-05** Document creation is idempotent.
+- [x] **AC-06** Party/source polymorphic references work without external FKs.
+- [x] **AC-07** Non-stock and service lines do not affect inventory ledger.
+- [x] **AC-08** Costing scope changes grouping without schema changes.
 - [ ] **AC-09** Batch/serial/expiry tracking is enforced only where configured.
 - [ ] **AC-10** Certificate requirements block invalid posting.
-- [ ] **AC-11** Purchase bonus quantity blends cost correctly.
-- [ ] **AC-12** Sale bonus quantity consumes total quantity and remains separately reportable.
+- [x] **AC-11** Purchase bonus quantity blends cost correctly.
+- [x] **AC-12** Sale bonus quantity consumes total quantity and remains separately reportable.
 - [ ] **AC-13** Certificates cannot attach without valid tracking identity.
 - [ ] **AC-14** Reorder notification is deduplicated and creates no purchase document.
-- [ ] **AC-15** Negative-stock block/allow behavior and cost treatment are correct.
+- [x] **AC-15** Negative-stock block/allow behavior and cost treatment are correct.
 - [ ] **AC-16** Locks/freeze prevent prohibited movements at the correct scope.
 - [ ] **AC-17** Custom contracts and Document Types register without Core patches.
-- [ ] **AC-18** Posting proceeds when approval is disabled/not required.
-- [ ] **AC-19** Posting proceeds when accounting is disabled.
-- [ ] **AC-20** Accounting failure rolls back stock posting.
-- [ ] **AC-21** Core alone owns `Document.status`.
+- [x] **AC-18** Posting proceeds when approval is disabled/not required.
+- [x] **AC-19** Posting proceeds when accounting is disabled.
+- [x] **AC-20** Accounting failure rolls back stock posting.
+- [x] **AC-21** Core alone owns `Document.status`.
 - [ ] **AC-22** Domain events are emitted at the documented lifecycle point.
 - [ ] **AC-23** Reservation operations update availability without ledger/bridge effects.
 
