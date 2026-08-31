@@ -7,6 +7,8 @@ use ESolution\Inventory\Models\Document;
 class PostPurchaseReturn extends BaseAction {
     public function handle(Document $doc){
         return DB::transaction(function() use ($doc){
+            $entries = [];
+
             foreach ($doc->lines as $line){
                 $qty = $line->qty;
                 $unit = $line->unit_cost ?? 0; // expected supplier invoice cost
@@ -26,8 +28,10 @@ class PostPurchaseReturn extends BaseAction {
                         'amount' => abs($diff),
                     ];
                 }
-                $this->journal()->post($doc->date, "Purchase Return {$doc->ref}", $entries, $doc->id);
             }
+
+            $this->journal()->post($doc->date, "Purchase Return {$doc->ref}", $entries, $doc->id);
+
             return $doc;
         });
     }

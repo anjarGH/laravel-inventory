@@ -8,4 +8,11 @@ abstract class BaseAction {
     protected function pipeline(){ return $this->inv->pipeline(); }
     protected function journal(){ return $this->inv->journal(); }
     protected function costing($line){ return app(CostingManager::class)->driverFor($line); }
+
+    protected function mergeEntries(array &$target, array $entries): void
+    {
+        foreach ($entries as $entry) {
+            $target[] = $entry;
+        }
+    }
 }

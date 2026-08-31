@@ -7,16 +7,18 @@ use ESolution\Inventory\Models\{Document, DocumentLine};
 class PostTransferBranch extends BaseAction {
     public function handle(Document $doc){
         return DB::transaction(function() use ($doc){
+            $entries = [];
+
             foreach ($doc->lines as $line){
                 $qty = $line->qty;
                 $unit = $this->costing($line)->consume($line, $qty);
                 $this->pipeline()->move($line, $qty, 'gudang', 'intransit', $unit, 'out');
 
                 // Optional: journal to inventory in-transit
-                $this->journal()->post($doc->date, "Interbranch Transfer Out {$doc->ref}", [
+                $this->mergeEntries($entries, [
                     ['account'=>inv_cfg('accounts.inventory_interbranch'),'dc'=>'D','amount'=>$qty*$unit],
                     ['account'=>inv_cfg('accounts.inventory'),'dc'=>'C','amount'=>$qty*$unit],
-                ], $doc->id);
+                ]);
 
                 $dest = new DocumentLine([
                     'document_id'=>$line->document_id,
@@ -33,11 +35,14 @@ class PostTransferBranch extends BaseAction {
                 $this->pipeline()->move($dest, $qty, 'intransit', 'gudang', $unit, 'in');
 
                 // arrival: clear in-transit
-                $this->journal()->post($doc->date, "Interbranch Transfer In {$doc->ref}", [
+                $this->mergeEntries($entries, [
                     ['account'=>inv_cfg('accounts.inventory'),'dc'=>'D','amount'=>$qty*$unit],
                     ['account'=>inv_cfg('accounts.inventory_interbranch'),'dc'=>'C','amount'=>$qty*$unit],
-                ], $doc->id);
+                ]);
             }
+
+            $this->journal()->post($doc->date, "Interbranch Transfer {$doc->ref}", $entries, $doc->id);
+
             return $doc;
         });
     }

@@ -8,6 +8,7 @@ class InventoryServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        require_once __DIR__.'/Support/helpers.php';
         $this->mergeConfigFrom(__DIR__.'/../config/inventory.php', 'inventory');
 
         $this->app->singleton(Services\InventoryManager::class, function($app){

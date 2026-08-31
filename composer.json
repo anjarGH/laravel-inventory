@@ -4,8 +4,16 @@
   "license": "Apache-2.0",
   "type": "library",
   "autoload": {
+    "files": [
+      "src/Support/helpers.php"
+    ],
     "psr-4": {
       "ESolution\\Inventory\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ESolution\\Inventory\\Tests\\": "tests/"
     }
   },
   "require": {
@@ -13,6 +21,29 @@
     "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
     "illuminate/database": "^9.0|^10.0|^11.0|^12.0|^13.0",
     "illuminate/events": "^9.0|^10.0|^11.0|^12.0|^13.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.88",
+    "larastan/larastan": "^2.11|^3.10",
+    "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
+    "pestphp/pest": "^2.36|^3.8|^4.7"
+  },
+  "scripts": {
+    "test": "pest",
+    "analyse": "phpstan analyse --memory-limit=1G",
+    "format": "php-cs-fixer fix --allow-risky=yes",
+    "format:check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+    "check": [
+      "@test",
+      "@analyse",
+      "@format:check"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    },
+    "sort-packages": true
   },
   "extra": {
     "laravel": {

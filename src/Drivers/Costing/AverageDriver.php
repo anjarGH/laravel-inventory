@@ -16,24 +16,28 @@ class AverageDriver implements CostingDriver
         return $q;
     }
 
-    private function aggregate(DocumentLine $line): array
+    private function aggregate(DocumentLine $line, bool $lock = false): array
     {
         $q = CostLayer::query();
         $this->scopeLayers($q, $line);
+        if ($lock) {
+            $q->lockForUpdate();
+        }
+
         $layers = $q->get();
         $qty = 0; $amt = 0;
         foreach ($layers as $l){ $qty += $l->qty_remain; $amt += $l->qty_remain * $l->unit_cost; }
         $avg = $qty > 0 ? $amt/$qty : 0;
-        return [$qty,$avg];
+
+        return [$qty, $avg, $layers];
     }
 
     public function consume(DocumentLine $line, float $qty): float
     {
-        [$qty0,$avg] = $this->aggregate($line);
+        [$qty0, $avg, $layers] = $this->aggregate($line, true);
         if ($qty0 < $qty) throw new \RuntimeException('Insufficient stock');
-        // reduce proportionally from earliest layers (fallback to FIFO reduction for simplicity)
-        $q = CostLayer::query(); $this->scopeLayers($q,$line);
-        $layers = $q->orderBy('id')->lockForUpdate()->get();
+
+        $layers = $layers->sortBy('id')->values();
         $remaining = $qty;
         foreach ($layers as $layer){
             if ($remaining<=0) break;

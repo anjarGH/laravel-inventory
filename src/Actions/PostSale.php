@@ -7,27 +7,36 @@ use ESolution\Inventory\Models\Document;
 class PostSale extends BaseAction {
     public function handle(Document $doc){
         return DB::transaction(function() use ($doc){
+            $entries = [];
+
             foreach ($doc->lines as $line){
                 $qty = $line->qty;
-
-                // move through stages (no COGS yet)
-                $stages = inv_cfg('item_type_stages')['regular'] ?? []; // simple: use 'regular' as default
-                $from = 'gudang';
-                foreach ($stages as $st){
-                    $this->pipeline()->move($line, $qty, $from, $st, 0, 'out');
-                    $from = $st;
-                }
-
-                // consume & recognize COGS on final
                 $unit = $this->costing($line)->consume($line, $qty);
-                $this->pipeline()->move($line, $qty, $from, 'delivered', $unit, 'out');
+                $finalStage = $this->resolveSaleStage($line->item_id);
 
-                $this->journal()->post($doc->date, "COGS {$doc->ref}", [
+                $this->pipeline()->move($line, $qty, 'gudang', $finalStage, $unit, 'out');
+
+                $this->mergeEntries($entries, [
                     ['account'=>inv_cfg('accounts.cogs'),'dc'=>'D','amount'=>$qty*$unit],
                     ['account'=>inv_cfg('accounts.inventory'),'dc'=>'C','amount'=>$qty*$unit],
-                ], $doc->id);
+                ]);
             }
+
+            $this->journal()->post($doc->date, "COGS {$doc->ref}", $entries, $doc->id);
+
             return $doc;
         });
+    }
+
+    protected function resolveSaleStage(int $itemId): string
+    {
+        $pipeline = $this->pipeline();
+        $trigger = inv_cfg('stage_triggers.recognize_cogs_on', 'final');
+
+        if ($trigger === 'custom') {
+            return inv_cfg('stage_triggers.custom_stage') ?: ($pipeline->finalStageForItemId($itemId) ?? 'delivered');
+        }
+
+        return $pipeline->finalStageForItemId($itemId) ?? 'delivered';
     }
 }

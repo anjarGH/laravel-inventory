@@ -2,10 +2,17 @@
 namespace ESolution\Inventory\Services;
 
 use ESolution\Inventory\Contracts\MovementPolicy;
-use ESolution\Inventory\Models\{DocumentLine, StockLedger, Item, ItemType, Stage, ItemTypeStage};
+use ESolution\Inventory\Models\{DocumentLine, StockLedger, Item, ItemTypeStage};
 
 class MovementPipeline implements MovementPolicy
 {
+    public function finalStageForItemId(int $itemId): ?string
+    {
+        $stages = $this->stagesForItemId($itemId);
+
+        return empty($stages) ? null : end($stages);
+    }
+
     public function nextStageFor(int $itemId, ?string $from): ?string
     {
         $stages = $this->stagesForItemId($itemId);
@@ -17,9 +24,26 @@ class MovementPipeline implements MovementPolicy
     public function stagesForItemId(int $itemId): array
     {
         $item = Item::findOrFail($itemId);
-        $type = ItemType::findOrFail($item->item_type_id);
+
+        $dbStages = ItemTypeStage::query()
+            ->where('item_type_id', $item->item_type_id)
+            ->join('inv_stages', 'inv_stages.id', '=', 'inv_item_type_stages.stage_id')
+            ->orderBy('inv_item_type_stages.order')
+            ->pluck('inv_stages.code')
+            ->all();
+
+        if ($dbStages !== []) {
+            return $dbStages;
+        }
+
+        $itemType = $item->itemType()->first();
+        if ($itemType && is_array($itemType->stages) && $itemType->stages !== []) {
+            return array_values($itemType->stages);
+        }
+
         $config = inv_cfg('item_type_stages');
-        return $config[$type->code] ?? [];
+
+        return $config[$itemType?->code ?? ''] ?? [];
     }
 
     public function move(DocumentLine $line, float $qty, ?string $from, ?string $to, float $unitCost, string $direction): void

@@ -16,6 +16,17 @@ class InventoryManager
     public function post(DocumentData $docData)
     {
         return DB::transaction(function() use ($docData){
+            if ($docData->external_id) {
+                $existing = Document::query()
+                    ->where('external_id', $docData->external_id)
+                    ->with('lines')
+                    ->first();
+
+                if ($existing) {
+                    return $existing;
+                }
+            }
+
             $doc = Document::create([
                 'external_id'=>$docData->external_id,
                 'type'=>$docData->type,
@@ -61,7 +72,42 @@ class InventoryManager
     public function journal(){ return app(JournalManager::class); }
 
     // Transfer helpers (simple wrappers around post())
-    public function transferRack(array $params){ /* left as exercise */ }
-    public function transferWarehouse(array $params){ /* left as exercise */ }
-    public function transferBranch(array $params){ /* left as exercise */ }
+    public function transferRack(array $params)
+    {
+        return $this->post($this->documentFromParams(DocumentType::TRANSFER_RACK, $params));
+    }
+
+    public function transferWarehouse(array $params)
+    {
+        return $this->post($this->documentFromParams(DocumentType::TRANSFER_WAREHOUSE, $params));
+    }
+
+    public function transferBranch(array $params)
+    {
+        return $this->post($this->documentFromParams(DocumentType::TRANSFER_BRANCH, $params));
+    }
+
+    protected function documentFromParams(DocumentType $type, array $params): DocumentData
+    {
+        $lines = array_map(function (array $line): LineData {
+            return new LineData(
+                itemId: $line['item_id'],
+                branchId: $line['branch_id'],
+                warehouseId: $line['warehouse_id'],
+                rackId: $line['rack_id'] ?? null,
+                qty: (float) $line['qty'],
+                unitCost: isset($line['unit_cost']) ? (float) $line['unit_cost'] : null,
+                meta: $line['meta'] ?? [],
+            );
+        }, $params['lines'] ?? []);
+
+        return new DocumentData(
+            type: $type->value,
+            date: $params['date'],
+            ref: $params['ref'] ?? null,
+            external_id: $params['external_id'] ?? null,
+            lines: $lines,
+            meta: $params['meta'] ?? [],
+        );
+    }
 }
