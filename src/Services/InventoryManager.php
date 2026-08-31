@@ -64,6 +64,10 @@ class InventoryManager
                 default => $doc,
             };
         });
+
+        app(\ESolution\Inventory\Services\StockCardManager::class)->generateForDocument($document);
+
+        return $document;
     }
 
     // quick helpers
