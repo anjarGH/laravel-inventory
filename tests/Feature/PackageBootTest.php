@@ -1,11 +1,13 @@
 <?php
 
+use ESolution\Inventory\Contracts\DocumentTypeRegistry;
 use ESolution\Inventory\Services\InventoryManager;
 use Illuminate\Support\Facades\Schema;
 
 it('boots the package and merges its configuration', function (): void {
-    expect(config('inventory.default_valuation'))->toBe('fifo')
+    expect(config('inventory.costing.default_method'))->toBe('fifo')
         ->and(app()->bound(InventoryManager::class))->toBeTrue()
+        ->and(app()->bound(DocumentTypeRegistry::class))->toBeTrue()
         ->and(app()->bound('inventory.manager'))->toBeTrue();
 });
 
@@ -24,5 +26,13 @@ it('installs the current reference migrations on a clean database', function ():
     $this->artisan('migrate', ['--database' => 'testing'])->assertSuccessful();
 
     expect(Schema::hasTable('inv_documents'))->toBeTrue()
-        ->and(Schema::hasTable('inv_stock_ledgers'))->toBeTrue();
+        ->and(Schema::hasTable('inv_stock_ledgers'))->toBeTrue()
+        ->and(Schema::hasTable('inv_cost_layers'))->toBeTrue()
+        ->and(Schema::hasTable('inv_reservations'))->toBeTrue();
+});
+
+it('exposes a successful configuration validation command', function (): void {
+    $this->artisan('inventory:validate-config')
+        ->expectsOutput('Inventory configuration is valid.')
+        ->assertSuccessful();
 });

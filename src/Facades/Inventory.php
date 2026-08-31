@@ -2,17 +2,21 @@
 
 namespace ESolution\Inventory\Facades;
 
+use ESolution\Inventory\DTO\DocumentData;
+use ESolution\Inventory\Models\Document;
+use ESolution\Inventory\Models\Reservation;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static mixed post(\ESolution\Inventory\DTO\DocumentData $doc)
- * @method static mixed transferRack(array $params)
- * @method static mixed transferWarehouse(array $params)
- * @method static mixed transferBranch(array $params)
+ * @method static Document post(DocumentData $document)
+ * @method static Document resumeApproved(int $documentId)
+ * @method static Reservation reserve(int $itemId, float $qty, int $warehouseId, string $sourceType, string $sourceId)
+ * @method static Reservation release(int $reservationId, ?float $qty = null)
+ * @method static Reservation consume(int $reservationId, float $qty, string $idempotencyKey, ?int $documentLineId = null)
  */
-class Inventory extends Facade
+final class Inventory extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'inventory.manager';
     }

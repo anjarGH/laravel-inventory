@@ -54,9 +54,9 @@
 
 - [ ] **P0** Remove the internal `JournalPoster`/`JournalManager` design from the target architecture; replace it with optional Accounting/Null bridges.
 - [ ] **P0** Replace the legacy combined `AverageDriver` with distinct Weighted Average and Moving Average drivers.
-- [ ] **P0** Replace legacy document/action orchestration with `PostingEngine`, registered Document Types, workflow transitions, and policy gates.
-- [ ] **P0** Replace the two legacy migrations with fresh Core baseline migrations matching TSD-0/TSD-1.
-- [ ] **P1** Preserve only verified reusable algorithms from legacy code; rewrite tests against the new contracts rather than legacy implementation details.
+- [x] **P0** Replace legacy document/action orchestration with `PostingEngine`, registered Document Types, workflow transitions, and policy gates.
+- [x] **P0** Replace the two legacy migrations with fresh Core baseline migrations matching TSD-0/TSD-1.
+- [x] **P1** Preserve only verified reusable algorithms from legacy code; rewrite tests against the new contracts rather than legacy implementation details.
 
 ### CI and Repository Baseline
 
@@ -89,60 +89,60 @@
 
 ### Design and Public Contracts
 
-- [ ] **P0** Define `CostingDriver`, `MovementPolicy`, and `DocumentTypeRegistry` contracts with stable signatures.
+- [x] **P0** Define `CostingDriver`, `MovementPolicy`, and `DocumentTypeRegistry` contracts with stable signatures.
 - [ ] **P0** Define repository contracts for Items, Ledger, and Reservations; Ledger exposes no update/delete operation.
-- [ ] **P0** Define DTOs for document headers/lines, posting context, costing results, and reversal requests.
-- [ ] **P0** Define `PostingEngine`, `WorkflowEngine`, `PolicyEngine`, `ConfigurationDepthResolver`, `ReservationService`, and `StockCardManager` responsibilities.
-- [ ] **P0** Define standard Document Types and their allowed transition maps.
+- [x] **P0** Define DTOs for document headers/lines, posting context, costing results, and reversal requests.
+- [x] **P0** Define `PostingEngine`, `WorkflowEngine`, `PolicyEngine`, `ConfigurationDepthResolver`, `ReservationService`, and `StockCardManager` responsibilities.
+- [x] **P0** Define standard Document Types and their allowed transition maps.
 - [ ] **P1** Define public facade methods and extension registration for Document Types, costing drivers, movement policies, events, and hooks.
 
 ### Schema — Fresh Baseline
 
 - [ ] **P0** Create organization and storage trees with valid parent/child level constraints (FR-01–FR-03).
-- [ ] **P0** Create master-data tables for categories, groups, UoMs/conversions, brands, items/types, variants, reasons, and inventory calendars (FR-04–FR-06).
-- [ ] **P0** Create batches, serials, and certificates with tracking indexes and ownership constraints (FR-25–FR-26).
-- [ ] **P0** Create documents and lines with workflow status, approval status, scoped source/party references, bonus quantity, warehouse/location, batch, serial, and metadata (FR-12–FR-19).
-- [ ] **P0** Add `posted_at`, reversal linkage, and a posting-attempt/idempotent completion marker to protect approved-document resume and retries.
-- [ ] **P0 PATCH-IDEMPOTENCY** Replace global `external_id` uniqueness with `(organization_id, source_type, external_id)`; store a canonical payload hash and reject same-key/different-payload retries.
-- [ ] **P0** Create append-only stock ledger and cost layers with document-line traceability and `batch_id` available in Core baseline.
-- [ ] **P0 PATCH-SCOPE** Create scoped Stock Cards using `item_id`, `scope_type`, `scope_id`, `as_of`; enforce a composite unique key.
-- [ ] **P0 PATCH-RESERVATION** Create Reservations with `reserved_qty`, `consumed_qty`, `released_qty`, status, source reference, warehouse, and timestamps; derive remaining quantity from these columns.
-- [ ] **P0** Create policy overrides and immutable audit trails.
+- [x] **P0** Create master-data tables for categories, groups, UoMs/conversions, brands, items/types, variants, reasons, and inventory calendars (FR-04–FR-06).
+- [x] **P0** Create batches, serials, and certificates with tracking indexes and ownership constraints (FR-25–FR-26).
+- [x] **P0** Create documents and lines with workflow status, approval status, scoped source/party references, bonus quantity, warehouse/location, batch, serial, and metadata (FR-12–FR-19).
+- [x] **P0** Add `posted_at`, reversal linkage, and a posting-attempt/idempotent completion marker to protect approved-document resume and retries.
+- [x] **P0 PATCH-IDEMPOTENCY** Replace global `external_id` uniqueness with `(organization_id, source_type, external_id)`; store a canonical payload hash and reject same-key/different-payload retries.
+- [x] **P0** Create append-only stock ledger and cost layers with document-line traceability and `batch_id` available in Core baseline.
+- [x] **P0 PATCH-SCOPE** Create scoped Stock Cards using `item_id`, `scope_type`, `scope_id`, `as_of`; enforce a composite unique key.
+- [x] **P0 PATCH-RESERVATION** Create Reservations with `reserved_qty`, `consumed_qty`, `released_qty`, status, source reference, warehouse, and timestamps; derive remaining quantity from these columns.
+- [x] **P0** Create policy overrides and immutable audit trails.
 - [ ] **P1** Add explicit named foreign keys, indexes for posting/costing/reporting queries, and database portability tests.
 
 ### Organization, Storage, and Configuration
 
-- [ ] **P0** Implement configurable organization/storage levels without schema branching.
-- [ ] **P0** Validate parent-enabled-before-child and mandatory warehouse/rack minimums during install/config validation.
+- [x] **P0** Implement configurable organization/storage levels without schema branching.
+- [ ] **P0** Validate parent-enabled-before-child and mandatory warehouse/rack minimums during install/config validation. *(Mandatory minimum and costing config validation are complete; parent/child runtime validation remains.)*
 - [ ] **P0** Ensure disabling a level affects new transactions only and never deletes historical data.
 - [ ] **P1** Implement sector preset merge order with explicit project overrides winning.
 
 ### Documents, Workflow, and Posting
 
-- [ ] **P0** Implement document creation and line validation inside a transaction.
-- [ ] **P0** Implement allowed state transitions and immutable status audit entries.
+- [x] **P0** Implement document creation and line validation inside a transaction.
+- [x] **P0** Implement allowed state transitions and immutable status audit entries.
 - [ ] **P0** Implement posting order: validate → approval gate → costing → movement ledger → accounting trigger → Stock Card → Posted.
 - [ ] **P0** Implement reversal as a new linked document; reject edits/deletes to posted ledger effects.
-- [ ] **P0 PATCH-RESUME** Implement `ResumeApprovedDocument` service/job that locks the document, checks approval/posting markers, resumes at costing exactly once, and safely no-ops on duplicate delivery.
+- [x] **P0 PATCH-RESUME** Implement `ResumeApprovedDocument` service/job that locks the document, checks approval/posting markers, resumes at costing exactly once, and safely no-ops on duplicate delivery.
 - [ ] **P0 PATCH-RESUME** Add unique posting-completion protection and concurrency tests for two workers resuming the same approved document.
 - [ ] **P1** Dispatch domain events only after commit and register deterministic veto/transition hooks.
 
 ### Costing and Stock Control
 
-- [ ] **P0** Implement FIFO with ordered row locking and bounded retry on lock contention.
+- [x] **P0** Implement FIFO with ordered row locking and bounded retry on lock contention.
 - [ ] **P0** Implement true Weighted Average as period/batch aggregate behavior defined by configuration.
 - [ ] **P0** Implement Moving Average recalculated after each receipt; do not alias it to Weighted Average.
 - [ ] **P0** Resolve costing by item+scope with item/location override precedence.
-- [ ] **P0 PATCH-NEGATIVE** Define `last_known_cost`; reject negative-stock issue if no prior valid cost exists, even when quantity policy allows negative stock.
-- [ ] **P0 PATCH-NEGATIVE** Represent negative consumption explicitly and settle/revalue it on the next receipt using new adjustment records without mutating posted ledger rows.
+- [x] **P0 PATCH-NEGATIVE** Define `last_known_cost`; reject negative-stock issue if no prior valid cost exists, even when quantity policy allows negative stock.
+- [x] **P0 PATCH-NEGATIVE** Represent negative consumption explicitly and settle/revalue it on the next receipt using new adjustment records without mutating posted ledger rows.
 - [ ] **P0** Implement available quantity as on-hand minus active reservation balance minus locks.
 - [ ] **P0** Implement negative-stock block/allow, inventory locks, and freeze behavior with scope-level concurrency protection.
 - [ ] **P1** Implement Standard Cost, Specific Identification, and Actual Cost after the three MVP drivers are stable.
 
 ### Tracking and Domain Integrity
 
-- [ ] **P0 PATCH-TRACKING** Validate `batch.item_id` and `serial.item_id` equal the document-line item.
-- [ ] **P0 PATCH-TRACKING** Validate serial warehouse/location, availability status, one-unit semantics, and serial count equals tracked quantity.
+- [x] **P0 PATCH-TRACKING** Validate `batch.item_id` and `serial.item_id` equal the document-line item.
+- [x] **P0 PATCH-TRACKING** Validate serial warehouse/location, availability status, one-unit semantics, and serial count equals tracked quantity.
 - [ ] **P0 PATCH-TRACKING** Validate batch expiry, recall state, and certificate policy before posting.
 - [ ] **P0** Implement certificate attachment only to Batch/Serial and enforce required certificate type/validity.
 - [ ] **P1** Implement deterministic tracking validation errors suitable for API consumers.
@@ -150,9 +150,9 @@
 ### Reservation and Reporting Core
 
 - [ ] **P0** Implement transactional `reserve`, `release`, and repeated partial `consume` operations with row locks.
-- [ ] **P0 PATCH-RESERVATION** Reject over-consumption/over-release and require a fulfillment idempotency key for each consume operation.
+- [x] **P0 PATCH-RESERVATION** Reject over-consumption/over-release and require a fulfillment idempotency key for each consume operation.
 - [ ] **P0 PATCH-RESERVATION** Link reservation consumption to Goods Issue/document line and support exact audit/reporting without inferring state from unrelated ledger rows.
-- [ ] **P0** Ensure Reservation operations never write ledger/cost layers or invoke either bridge.
+- [x] **P0** Ensure Reservation operations never write ledger/cost layers or invoke either bridge.
 - [ ] **P0** Implement scoped Ledger, Stock Card, valuation, movement, and available-stock query services.
 - [ ] **P1** Implement reorder notification deduplication, scheduled checks, and reconciliation commands.
 

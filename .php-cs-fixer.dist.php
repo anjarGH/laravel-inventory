@@ -1,9 +1,12 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    // Legacy src/ remains reference code until Phase 1 replaces each subsystem.
-    // It is intentionally excluded here to avoid rewriting in-progress user work.
-    ->in([__DIR__ . '/tests'])
+    ->in([
+        __DIR__ . '/config',
+        __DIR__ . '/database/migrations',
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
+    ])
     ->append([__FILE__]);
 
 return (new PhpCsFixer\Config())

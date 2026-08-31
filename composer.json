@@ -1,6 +1,6 @@
 {
   "name": "elgibor-solution/laravel-inventory",
-  "description": "Inventory, costing (FIFO & Average), journal posting, multi-branch/warehouse/rack, configurable stages for Laravel.",
+  "description": "Extensible inventory core with scoped stock, costing, tracking, workflow, and reservations for Laravel.",
   "license": "Apache-2.0",
   "type": "library",
   "autoload": {
