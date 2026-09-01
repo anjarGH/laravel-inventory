@@ -28,6 +28,9 @@
     "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
     "pestphp/pest": "^2.36|^3.8|^4.7"
   },
+  "suggest": {
+    "elgibor-solution/laravel-accounting": "Required only when inventory.accounting.enabled is true."
+  },
   "scripts": {
     "test": "pest",
     "analyse": "phpstan analyse --memory-limit=1G",

@@ -1,6 +1,8 @@
 <?php
 
+use ESolution\Inventory\Contracts\AccountingBridge;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
+use ESolution\Inventory\DTO\AccountingPostingData;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
 use ESolution\Inventory\Enums\DocumentStatus;
@@ -206,10 +208,17 @@ test('AC-19 posting proceeds when accounting is disabled', function (): void {
 });
 
 test('AC-20 accounting failure rolls back stock posting', function (): void {
-    config()->set('inventory.accounting.enabled', true);
+    app()->instance(AccountingBridge::class, new class implements AccountingBridge {
+        public function post(Document $document, AccountingPostingData $data): ?string
+        {
+            throw new DomainException('Stub accounting failure.');
+        }
+
+        public function reverse(Document $originalDocument, string $reason): void {}
+    });
 
     expect(fn() => $this->postReceipt(externalId: 'AC20-GR'))
-        ->toThrow(DomainException::class, 'no Accounting Bridge');
+        ->toThrow(DomainException::class, 'Stub accounting failure');
     expect(Document::query()->count())->toBe(0)
         ->and(StockLedger::query()->count())->toBe(0)
         ->and(DB::table('inv_cost_layers')->count())->toBe(0);

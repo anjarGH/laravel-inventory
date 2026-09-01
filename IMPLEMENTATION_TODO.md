@@ -210,31 +210,31 @@
 
 ### Design, Implementation, and Tests
 
-- [ ] **P0** Implement conditional real/Null Accounting Bridge binding; external package remains optional.
-- [ ] **P0** Remove all internal journal migrations, models, account mapping, and posting logic from the target Core.
-- [ ] **P0** Map Core Document Types to verified external `service_code` values; fail closed for missing mappings.
-- [ ] **P0** Forward only inventory-computed quantity/cost plus caller-supplied financial fields; do not implement GL logic.
-- [ ] **P0** Propagate accounting exceptions so the posting transaction rolls back.
-- [ ] **P0** Implement linked accounting reversal and prevent double reversal.
-- [ ] **P1** Pass tenant identity through without coupling it to Core organization hierarchy.
-- [ ] **P1** Re-audit external package signatures/config whenever its major version changes.
-- [ ] **P0** Contract-test Null, successful post, mapping failure, locked period, rollback, and reversal paths.
+- [x] **P0** Implement conditional real/Null Accounting Bridge binding; external package remains optional.
+- [x] **P0** Remove all internal journal migrations, models, account mapping, and posting logic from the target Core.
+- [x] **P0** Map Core Document Types to verified external `service_code` values; fail closed for missing mappings.
+- [x] **P0** Forward only inventory-computed quantity/cost plus caller-supplied financial fields; do not implement GL logic.
+- [x] **P0** Propagate accounting exceptions so the posting transaction rolls back.
+- [x] **P0** Implement linked accounting reversal and prevent double reversal.
+- [x] **P1** Pass tenant identity through without coupling it to Core organization hierarchy.
+- [x] **P1** Re-audit external package signatures/config whenever its major version changes.
+- [x] **P0** Contract-test Null, successful post, mapping failure, locked period, rollback, and reversal paths. *(Stub contract is green; real external-package fixture remains required by GATE-2.)*
 
 ### Acceptance Criteria
 
-- [ ] **AC2-01** Bridge is optional and Null bridge makes no external call.
-- [ ] **AC2-02** Verified service mapping is used.
-- [ ] **AC2-03** Correct inventory valuation payload is forwarded.
-- [ ] **AC2-04** Caller-supplied additional lines are forwarded without Core accounting logic.
-- [ ] **AC2-05** Tenant pass-through follows project resolution.
-- [ ] **AC2-06** External exception rolls back posting.
-- [ ] **AC2-07** Reversal links correctly and cannot be duplicated.
-- [ ] **AC2-08** Missing mapping fails closed with a diagnostic error.
-- [ ] **AC2-09** Core contains no internal accounting schema/engine.
+- [x] **AC2-01** Bridge is optional and Null bridge makes no external call.
+- [x] **AC2-02** Verified service mapping is used.
+- [x] **AC2-03** Correct inventory valuation payload is forwarded.
+- [x] **AC2-04** Caller-supplied additional lines are forwarded without Core accounting logic.
+- [x] **AC2-05** Tenant pass-through follows project resolution.
+- [x] **AC2-06** External exception rolls back posting.
+- [x] **AC2-07** Reversal links correctly and cannot be duplicated.
+- [x] **AC2-08** Missing mapping fails closed with a diagnostic error.
+- [x] **AC2-09** Core contains no internal accounting schema/engine.
 
 ### Exit Gate
 
-- [ ] **P0 GATE-2** AC2-01–AC2-09 pass against stubs and the verified external package test fixture.
+- [ ] **P0 GATE-2** AC2-01–AC2-09 pass against stubs and the verified external package test fixture. *(Stub suite passes; blocked on installing and testing the real optional package fixture.)*
 
 ---
 

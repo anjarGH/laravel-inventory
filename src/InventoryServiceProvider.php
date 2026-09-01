@@ -2,7 +2,13 @@
 
 namespace ESolution\Inventory;
 
+use ESolution\Inventory\Bridges\ExternalAccountingBridge;
+use ESolution\Inventory\Bridges\LaravelAccountingJournalGateway;
+use ESolution\Inventory\Bridges\NullAccountingBridge;
+use ESolution\Inventory\Commands\ValidateAccountingCommand;
 use ESolution\Inventory\Commands\ValidateConfigurationCommand;
+use ESolution\Inventory\Contracts\AccountingBridge;
+use ESolution\Inventory\Contracts\AccountingJournalGateway;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
 use ESolution\Inventory\Services\ConfigurationDepthResolver;
 use ESolution\Inventory\Services\InMemoryDocumentTypeRegistry;
@@ -21,6 +27,16 @@ final class InventoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/inventory.php', 'inventory');
+
+        $this->app->singleton(AccountingJournalGateway::class, LaravelAccountingJournalGateway::class);
+        $this->app->singleton(AccountingBridge::class, function ($app): AccountingBridge {
+            $enabled = (bool) config('inventory.accounting.enabled', false);
+            $installed = class_exists('ESolution\\LaravelAccounting\\Services\\JournalService');
+
+            return $enabled && $installed
+                ? $app->make(ExternalAccountingBridge::class)
+                : $app->make(NullAccountingBridge::class);
+        });
 
         $this->app->singleton(DocumentTypeRegistry::class, function (): DocumentTypeRegistry {
             $registry = new InMemoryDocumentTypeRegistry();
@@ -71,7 +87,10 @@ final class InventoryServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([ValidateConfigurationCommand::class]);
+            $this->commands([
+                ValidateAccountingCommand::class,
+                ValidateConfigurationCommand::class,
+            ]);
         }
     }
 }

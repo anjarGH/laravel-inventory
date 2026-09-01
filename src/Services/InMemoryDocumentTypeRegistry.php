@@ -18,4 +18,9 @@ class InMemoryDocumentTypeRegistry implements DocumentTypeRegistry
     {
         return isset($this->definitions[$type]);
     }
+
+    public function all(): array
+    {
+        return $this->definitions;
+    }
 }

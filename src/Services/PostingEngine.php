@@ -2,7 +2,9 @@
 
 namespace ESolution\Inventory\Services;
 
+use ESolution\Inventory\Contracts\AccountingBridge;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
+use ESolution\Inventory\DTO\AccountingPostingData;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
 use ESolution\Inventory\Enums\DocumentStatus;
@@ -25,6 +27,7 @@ final class PostingEngine
         private readonly PolicyEngine $policies,
         private readonly ConfigurationDepthResolver $depth,
         private readonly StockCardManager $stockCards,
+        private readonly AccountingBridge $accounting,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -50,6 +53,12 @@ final class PostingEngine
             }
 
             $definition = $this->documentTypes->get($data->type);
+            $meta = $data->meta;
+            $meta['_accounting_context'] = [
+                'additional_journal_lines' => $data->additionalJournalLines,
+                'service_code' => $data->accountingServiceCode,
+                'tenant_identity' => $data->tenantIdentity,
+            ];
             $document = Document::create([
                 'document_type' => $data->type,
                 'organization_id' => $data->organizationId,
@@ -61,7 +70,7 @@ final class PostingEngine
                 'source_id' => $data->sourceId,
                 'trx_date' => $data->trxDate,
                 'status' => DocumentStatus::DRAFT,
-                'meta' => $data->meta,
+                'meta' => $meta,
             ]);
 
             foreach ($data->lines as $index => $lineData) {
@@ -118,6 +127,7 @@ final class PostingEngine
             'posting_marker' => 'document:' . $document->getKey(),
         ])->save();
 
+        $stockLines = [];
         foreach (DocumentLine::query()->where('document_id', $document->getKey())->orderBy('line_no')->get() as $line) {
             if (Item::query()->findOrFail($line->item_id)->item_type !== 'stock' || $direction === 'none') {
                 continue;
@@ -127,11 +137,23 @@ final class PostingEngine
                 ? $this->receive($line, $costing)
                 : $this->issue($line, $costing);
 
-            $this->stockCards->refresh($line);
+            $stockLines[] = $line;
         }
 
-        if ((bool) config('inventory.accounting.enabled', false)) {
-            throw new \DomainException('Accounting is enabled but no Accounting Bridge is installed.');
+        $context = (array) ($document->meta['_accounting_context'] ?? []);
+        $totalCost = (float) StockLedger::query()
+            ->whereIn('document_line_id', $document->lines()->select('id'))
+            ->sum('amount');
+        $this->accounting->post($document, new AccountingPostingData(
+            totalCost: $totalCost,
+            direction: $direction,
+            additionalJournalLines: (array) ($context['additional_journal_lines'] ?? []),
+            serviceCode: isset($context['service_code']) ? (string) $context['service_code'] : null,
+            tenantIdentity: $context['tenant_identity'] ?? null,
+        ));
+
+        foreach ($stockLines as $line) {
+            $this->stockCards->refresh($line);
         }
 
         $this->workflow->transition($document, DocumentStatus::POSTED);
