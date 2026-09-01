@@ -1,6 +1,8 @@
 <?php
 
+use ESolution\Inventory\Bridges\ExternalApprovalBridge;
 use ESolution\Inventory\Contracts\AccountingBridge;
+use ESolution\Inventory\Contracts\ApprovalBridge;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
 use ESolution\Inventory\DTO\AccountingPostingData;
 use ESolution\Inventory\DTO\DocumentData;
@@ -11,6 +13,7 @@ use ESolution\Inventory\Models\StockLedger;
 use ESolution\Inventory\Services\ConfigurationDepthResolver;
 use ESolution\Inventory\Services\InventoryManager;
 use ESolution\Inventory\Support\DocumentTypeDefinition;
+use ESolution\Inventory\Tests\Fakes\FakeApprovalWorkflowGateway;
 use Illuminate\Support\Facades\DB;
 
 beforeEach(function (): void {
@@ -225,11 +228,13 @@ test('AC-20 accounting failure rolls back stock posting', function (): void {
 });
 
 test('AC-21 Core document status remains separate from approval status', function (): void {
-    config()->set('inventory.approval.enabled', true);
+    $approval = new FakeApprovalWorkflowGateway();
+    $approval->requireApproval();
+    app()->instance(ApprovalBridge::class, new ExternalApprovalBridge($approval));
     $document = $this->postReceipt(externalId: 'AC21-GR');
 
     expect($document->status)->toBe(DocumentStatus::WAITING_APPROVAL)
-        ->and($document->approval_status)->toBeNull();
+        ->and($document->approval_status)->toBe('pending_approval');
 });
 
 test('AC-22 domain events emit at documented lifecycle points')->todo('After-commit domain events are not implemented.');

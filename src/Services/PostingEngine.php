@@ -2,9 +2,12 @@
 
 namespace ESolution\Inventory\Services;
 
+use ESolution\Inventory\Bridges\Support\TenantResolver;
 use ESolution\Inventory\Contracts\AccountingBridge;
+use ESolution\Inventory\Contracts\ApprovalBridge;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
 use ESolution\Inventory\DTO\AccountingPostingData;
+use ESolution\Inventory\DTO\ApprovalContext;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
 use ESolution\Inventory\Enums\DocumentStatus;
@@ -28,6 +31,8 @@ final class PostingEngine
         private readonly ConfigurationDepthResolver $depth,
         private readonly StockCardManager $stockCards,
         private readonly AccountingBridge $accounting,
+        private readonly ApprovalBridge $approval,
+        private readonly TenantResolver $tenants,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -59,6 +64,12 @@ final class PostingEngine
                 'service_code' => $data->accountingServiceCode,
                 'tenant_identity' => $data->tenantIdentity,
             ];
+            $meta['_approval_context'] = [
+                'action' => $data->approvalAction,
+                'data' => $data->approvalData,
+                'metadata' => $data->approvalMetadata,
+                'tenant_identity' => $data->tenantIdentity,
+            ];
             $document = Document::create([
                 'document_type' => $data->type,
                 'organization_id' => $data->organizationId,
@@ -83,10 +94,40 @@ final class PostingEngine
 
             $this->workflow->transition($document, DocumentStatus::SUBMITTED);
 
-            if ((bool) config('inventory.approval.enabled', false)) {
+            $approvalData = array_merge([
+                'document_id' => $document->getKey(),
+                'document_type' => $document->document_type,
+                'organization_id' => $document->organization_id,
+                'trx_date' => $document->trx_date?->toDateString(),
+                'party_type' => $document->party_type,
+                'party_id' => $document->party_id,
+                'source_type' => $document->source_type,
+                'source_id' => $document->source_id,
+            ], $data->approvalData);
+            $detailData = DocumentLine::query()
+                ->where('document_id', $document->getKey())
+                ->orderBy('line_no')
+                ->get()
+                ->map(fn(DocumentLine $line): array => $line->toArray())
+                ->all();
+            $paused = $this->approval->checkAndSubmitIfRequired($document, new ApprovalContext(
+                action: $data->approvalAction,
+                data: $approvalData,
+                detailData: $detailData,
+                metadata: $data->approvalMetadata,
+                tenantId: $this->tenants->resolve($data->tenantIdentity),
+            ));
+            if ($paused) {
+                $document->refresh();
+                if ($document->posting_completed_at !== null || $document->status === DocumentStatus::POSTED) {
+                    return $document->load('lines');
+                }
+                if ($document->status === DocumentStatus::WAITING_APPROVAL) {
+                    return $document->load('lines');
+                }
                 $this->workflow->transition($document, DocumentStatus::WAITING_APPROVAL);
 
-                return $document->load('lines');
+                return $document->refresh()->load('lines');
             }
 
             $this->completePosting($document, $definition->direction, $definition->costing);

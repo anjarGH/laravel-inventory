@@ -27,6 +27,8 @@ return [
             'warehouse_transfer.cross_company' => 'STOCK_TRANSFER',
         ],
     ],
-    'approval' => ['enabled' => false, 'rejection_status_map' => []],
+    'approval' => [
+        'rejection_status_map' => [],
+    ],
     'events' => ['after_commit' => true],
 ];

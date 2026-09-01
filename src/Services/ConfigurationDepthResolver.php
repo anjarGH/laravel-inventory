@@ -21,6 +21,12 @@ final class ConfigurationDepthResolver
         if (! in_array($config['costing']['default_method'] ?? null, ['fifo', 'weighted_average', 'moving_average'], true)) {
             $errors[] = 'Default costing method is not supported.';
         }
+        foreach ((array) ($config['approval']['rejection_status_map'] ?? []) as $documentType => $target) {
+            if (! is_string($documentType) || ! in_array($target, ['draft', 'cancelled'], true)) {
+                $errors[] = 'Approval rejection targets must be draft or cancelled.';
+                break;
+            }
+        }
 
         return $errors;
     }

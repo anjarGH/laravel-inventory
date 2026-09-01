@@ -245,33 +245,33 @@
 
 ### Design, Implementation, and Tests
 
-- [ ] **P0** Implement conditional real/Null Approval Bridge binding and exact verified call signatures.
-- [ ] **P0** Maintain dual-column ownership: Core owns `status`; external package owns `approval_status`.
-- [ ] **P0** Submit exactly once and pause the posting pipeline at Waiting Approval.
-- [ ] **P0** Route approved status to `ResumeApprovedDocument`; do not merely write `Approved` and stop.
-- [ ] **P0** Apply configured rejection target per Document Type after blocker decision is approved.
-- [ ] **P0** Do not automatically equate external cancelled status with Core cancellation.
-- [ ] **P0** Validate IdentityResolver, service-auth behavior, status-field config, matching rules, and published workflows.
-- [ ] **P1** Provide `inventory:approval:validate` and clear diagnostics for runtime prerequisites.
-- [ ] **P0** Test duplicate submit, duplicate approval events, concurrent resume, rejection, cancellation, missing identity, and unpublished workflows.
+- [x] **P0** Implement conditional real/Null Approval Bridge binding and exact verified call signatures.
+- [x] **P0** Maintain dual-column ownership: Core owns `status`; external package owns `approval_status`.
+- [x] **P0** Submit exactly once and pause the posting pipeline at Waiting Approval.
+- [x] **P0** Route approved status to `ResumeApprovedDocument`; do not merely write `Approved` and stop.
+- [ ] **P0** Apply configured rejection target per Document Type after blocker decision is approved. *(Mechanism and tests are complete; product approval in BLOCK-01 remains open.)*
+- [x] **P0** Do not automatically equate external cancelled status with Core cancellation.
+- [x] **P0** Validate IdentityResolver, service-auth behavior, status-field config, matching rules, and published workflows.
+- [x] **P1** Provide `inventory:approval:validate` and clear diagnostics for runtime prerequisites.
+- [ ] **P0** Test duplicate submit, duplicate approval events, concurrent resume, rejection, cancellation, missing identity, and unpublished workflows. *(All stub paths pass; real-package parallel concurrency remains.)*
 
 ### Acceptance Criteria
 
-- [ ] **AC3-01** Null bridge posts without pause/call.
-- [ ] **AC3-02** No matching rule posts immediately.
-- [ ] **AC3-03** Matching rule submits once and pauses.
-- [ ] **AC3-04** Retry does not create duplicate ApprovalInstance.
-- [ ] **AC3-05** Approval resumes and completes posting exactly once.
-- [ ] **AC3-06** Rejection applies configured Core target.
-- [ ] **AC3-07** External cancellation does not overwrite Core status automatically.
-- [ ] **AC3-08** Status-column ownership remains isolated.
-- [ ] **AC3-09** Unpublished workflow produces a diagnosable error.
-- [ ] **AC3-10** Identity/service-auth prerequisites are validated.
-- [ ] **AC3-11** Bridge behavior survives configured tenant resolution.
+- [x] **AC3-01** Null bridge posts without pause/call.
+- [x] **AC3-02** No matching rule posts immediately.
+- [x] **AC3-03** Matching rule submits once and pauses.
+- [x] **AC3-04** Retry does not create duplicate ApprovalInstance.
+- [x] **AC3-05** Approval resumes and completes posting exactly once.
+- [x] **AC3-06** Rejection applies configured Core target.
+- [x] **AC3-07** External cancellation does not overwrite Core status automatically.
+- [x] **AC3-08** Status-column ownership remains isolated.
+- [x] **AC3-09** Unpublished workflow produces a diagnosable error.
+- [x] **AC3-10** Identity/service-auth prerequisites are validated.
+- [x] **AC3-11** Bridge behavior survives configured tenant resolution.
 
 ### Exit Gate
 
-- [ ] **P0 GATE-3** AC3-01–AC3-11 and approval-resume concurrency tests pass.
+- [ ] **P0 GATE-3** AC3-01–AC3-11 and approval-resume concurrency tests pass. *(Stub suite passes; blocked on BLOCK-01, real optional-package fixture, and parallel database concurrency test.)*
 
 ---
 

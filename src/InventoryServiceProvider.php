@@ -3,13 +3,21 @@
 namespace ESolution\Inventory;
 
 use ESolution\Inventory\Bridges\ExternalAccountingBridge;
+use ESolution\Inventory\Bridges\ExternalApprovalBridge;
 use ESolution\Inventory\Bridges\LaravelAccountingJournalGateway;
+use ESolution\Inventory\Bridges\LaravelApprovalWorkflowGateway;
 use ESolution\Inventory\Bridges\NullAccountingBridge;
+use ESolution\Inventory\Bridges\NullApprovalBridge;
 use ESolution\Inventory\Commands\ValidateAccountingCommand;
+use ESolution\Inventory\Commands\ValidateApprovalCommand;
 use ESolution\Inventory\Commands\ValidateConfigurationCommand;
 use ESolution\Inventory\Contracts\AccountingBridge;
 use ESolution\Inventory\Contracts\AccountingJournalGateway;
+use ESolution\Inventory\Contracts\ApprovalBridge;
+use ESolution\Inventory\Contracts\ApprovalWorkflowGateway;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
+use ESolution\Inventory\Models\Document;
+use ESolution\Inventory\Observers\DocumentApprovalObserver;
 use ESolution\Inventory\Services\ConfigurationDepthResolver;
 use ESolution\Inventory\Services\InMemoryDocumentTypeRegistry;
 use ESolution\Inventory\Services\InventoryManager;
@@ -19,6 +27,7 @@ use ESolution\Inventory\Services\ReservationService;
 use ESolution\Inventory\Services\ResumeApprovedDocument;
 use ESolution\Inventory\Services\StockCardManager;
 use ESolution\Inventory\Services\WorkflowEngine;
+use ESolution\Inventory\Support\ApprovalPackageInspector;
 use ESolution\Inventory\Support\DocumentTypeDefinition;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,6 +45,14 @@ final class InventoryServiceProvider extends ServiceProvider
             return $enabled && $installed
                 ? $app->make(ExternalAccountingBridge::class)
                 : $app->make(NullAccountingBridge::class);
+        });
+        $this->app->singleton(ApprovalWorkflowGateway::class, LaravelApprovalWorkflowGateway::class);
+        $this->app->singleton(ApprovalBridge::class, function ($app): ApprovalBridge {
+            $installed = $app->make(ApprovalPackageInspector::class)->installed();
+
+            return $installed
+                ? $app->make(ExternalApprovalBridge::class)
+                : $app->make(NullApprovalBridge::class);
         });
 
         $this->app->singleton(DocumentTypeRegistry::class, function (): DocumentTypeRegistry {
@@ -76,6 +93,8 @@ final class InventoryServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Document::observe(DocumentApprovalObserver::class);
+
         $this->publishes([
             __DIR__ . '/../config/inventory.php' => config_path('inventory.php'),
         ], ['inventory-config', 'inventory-core-config']);
@@ -89,6 +108,7 @@ final class InventoryServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ValidateAccountingCommand::class,
+                ValidateApprovalCommand::class,
                 ValidateConfigurationCommand::class,
             ]);
         }

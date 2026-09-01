@@ -55,6 +55,17 @@ php artisan inventory:accounting:validate
 See [Accounting Bridge](docs/ACCOUNTING_BRIDGE.md) for mapping, transaction,
 tenant, and reversal behavior.
 
+Approval Flow is also optional. When `e-solution/laravel-approval-flow` is
+installed, validate its identity resolver, status field, service-auth posture,
+and published workflows:
+
+```bash
+php artisan inventory:approval:validate
+```
+
+See [Approval Bridge](docs/APPROVAL_BRIDGE.md) for submit, callback, status
+ownership, rejection, cancellation, and idempotent resume behavior.
+
 ## Posting example
 
 ```php

@@ -29,6 +29,7 @@
     "pestphp/pest": "^2.36|^3.8|^4.7"
   },
   "suggest": {
+    "e-solution/laravel-approval-flow": "Optional workflow approval integration for Inventory documents.",
     "elgibor-solution/laravel-accounting": "Required only when inventory.accounting.enabled is true."
   },
   "scripts": {

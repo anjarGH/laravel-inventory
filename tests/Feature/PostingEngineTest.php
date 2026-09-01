@@ -1,5 +1,7 @@
 <?php
 
+use ESolution\Inventory\Bridges\ExternalApprovalBridge;
+use ESolution\Inventory\Contracts\ApprovalBridge;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
 use ESolution\Inventory\Enums\DocumentStatus;
@@ -7,6 +9,7 @@ use ESolution\Inventory\Models\Document;
 use ESolution\Inventory\Models\StockLedger;
 use ESolution\Inventory\Services\InventoryManager;
 use ESolution\Inventory\Services\WorkflowEngine;
+use ESolution\Inventory\Tests\Fakes\FakeApprovalWorkflowGateway;
 use Illuminate\Support\Facades\DB;
 
 beforeEach(function (): void {
@@ -187,7 +190,9 @@ it('requires last-known cost for negative stock and settles it on the next recei
 });
 
 it('resumes an approved document exactly once when delivery is repeated', function (): void {
-    config()->set('inventory.approval.enabled', true);
+    $approval = new FakeApprovalWorkflowGateway();
+    $approval->requireApproval();
+    app()->instance(ApprovalBridge::class, new ExternalApprovalBridge($approval));
     $manager = app(InventoryManager::class);
     $document = $manager->post(new DocumentData(
         type: 'purchase_receipt',

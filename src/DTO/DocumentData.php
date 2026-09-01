@@ -22,5 +22,8 @@ final class DocumentData
         public array $additionalJournalLines = [],
         public ?string $accountingServiceCode = null,
         public mixed $tenantIdentity = null,
+        public string $approvalAction = 'create',
+        public array $approvalData = [],
+        public array $approvalMetadata = [],
     ) {}
 }
