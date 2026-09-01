@@ -6,7 +6,9 @@ parameters:
         maximumNumberOfProcesses: 1
     paths:
         - src
+        - packages/retail/src
     level: 3
     tmpDir: .phpstan.cache
     databaseMigrationsPath:
         - database/migrations
+        - packages/retail/database/migrations

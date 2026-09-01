@@ -13,7 +13,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ESolution\\Inventory\\Tests\\": "tests/"
+      "ESolution\\Inventory\\Tests\\": "tests/",
+      "ESolution\\InventoryRetail\\": "packages/retail/src/"
     }
   },
   "require": {
@@ -50,6 +51,9 @@
     "sort-packages": true
   },
   "extra": {
+    "branch-alias": {
+      "dev-main": "1.x-dev"
+    },
     "laravel": {
       "providers": [
         "ESolution\\Inventory\\InventoryServiceProvider"

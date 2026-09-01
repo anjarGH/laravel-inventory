@@ -60,3 +60,51 @@ it('prevents Core Composer dependencies on vertical packages', function (): void
         expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
     }
 });
+
+it('keeps the Retail package dependent on Core only and inside its namespace and table prefix', function (): void {
+    $root = dirname(__DIR__, 2);
+    $retailRoot = $root . '/packages/retail';
+    $composer = json_decode(file_get_contents($retailRoot . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
+    $dependencies = array_keys($composer['require'] ?? []);
+
+    expect($dependencies)->toContain('elgibor-solution/laravel-inventory');
+    foreach ($dependencies as $dependency) {
+        if ($dependency !== 'elgibor-solution/laravel-inventory') {
+            expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
+        }
+    }
+
+    $siblingNamespaces = [
+        'ESolution\\InventoryWms\\',
+        'ESolution\\InventoryManufacturing\\',
+        'ESolution\\InventoryHealthcare\\',
+        'ESolution\\InventoryFood\\',
+        'ESolution\\InventoryAsset\\',
+        'ESolution\\InventoryProject\\',
+        'ESolution\\InventoryAutomotive\\',
+        'ESolution\\InventoryLibrary\\',
+    ];
+    foreach (inventoryPhpFiles($retailRoot . '/src') as $file) {
+        $source = file_get_contents($file);
+        expect($source)->toContain('namespace ESolution\\InventoryRetail');
+        foreach ($siblingNamespaces as $namespace) {
+            expect($source)->not->toContain($namespace, "Retail file {$file} imports sibling {$namespace}");
+        }
+    }
+
+    foreach (inventoryPhpFiles($retailRoot . '/database/migrations') as $file) {
+        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $matches);
+        foreach ($matches[1] as $table) {
+            expect($table)->toStartWith('invr_');
+        }
+    }
+});
+
+it('keeps Consignment settlement accounting project-owned', function (): void {
+    $retailSource = file_get_contents(
+        dirname(__DIR__, 2) . '/packages/retail/src/Services/SettlementRecorder.php',
+    );
+
+    expect($retailSource)->not->toContain('AccountingBridge')
+        ->and($retailSource)->not->toContain('AccountingPostingData');
+});

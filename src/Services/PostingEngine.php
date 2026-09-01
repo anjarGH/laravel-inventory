@@ -6,12 +6,15 @@ use ESolution\Inventory\Bridges\Support\TenantResolver;
 use ESolution\Inventory\Contracts\AccountingBridge;
 use ESolution\Inventory\Contracts\ApprovalBridge;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
+use ESolution\Inventory\Contracts\MovementPolicyRegistry;
+use ESolution\Inventory\Contracts\OwnershipNeutralMovementPolicy;
 use ESolution\Inventory\DTO\AccountingPostingData;
 use ESolution\Inventory\DTO\ApprovalContext;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
 use ESolution\Inventory\DTO\ReservationConsumptionData;
 use ESolution\Inventory\Enums\DocumentStatus;
+use ESolution\Inventory\Events\DocumentPosted;
 use ESolution\Inventory\Models\Batch;
 use ESolution\Inventory\Models\CostAdjustment;
 use ESolution\Inventory\Models\CostLayer;
@@ -35,6 +38,7 @@ final class PostingEngine
         private readonly ApprovalBridge $approval,
         private readonly TenantResolver $tenants,
         private readonly ReservationService $reservations,
+        private readonly MovementPolicyRegistry $movementPolicies,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -176,9 +180,18 @@ final class PostingEngine
         ])->save();
 
         $stockLines = [];
+        $hasOwnershipNeutralReceipt = false;
+        $hasOwnedReceipt = false;
         foreach (DocumentLine::query()->where('document_id', $document->getKey())->orderBy('line_no')->get() as $line) {
+            $movementPolicy = $this->movementPolicies->resolve($line);
+            $movementPolicy?->validate($line, $direction);
             if (Item::query()->findOrFail($line->item_id)->item_type !== 'stock' || $direction === 'none') {
                 continue;
+            }
+            if ($direction === 'in') {
+                $movementPolicy instanceof OwnershipNeutralMovementPolicy
+                    ? $hasOwnershipNeutralReceipt = true
+                    : $hasOwnedReceipt = true;
             }
 
             $direction === 'in'
@@ -190,17 +203,23 @@ final class PostingEngine
 
         $this->consumeLinkedReservations($document);
 
+        if ($hasOwnershipNeutralReceipt && $hasOwnedReceipt) {
+            throw new \DomainException('One receipt cannot mix owned and ownership-neutral stock lines.');
+        }
+
         $context = (array) ($document->meta['_accounting_context'] ?? []);
         $totalCost = (float) StockLedger::query()
             ->whereIn('document_line_id', $document->lines()->select('id'))
             ->sum('amount');
-        $this->accounting->post($document, new AccountingPostingData(
-            totalCost: $totalCost,
-            direction: $direction,
-            additionalJournalLines: (array) ($context['additional_journal_lines'] ?? []),
-            serviceCode: isset($context['service_code']) ? (string) $context['service_code'] : null,
-            tenantIdentity: $context['tenant_identity'] ?? null,
-        ));
+        if (! $hasOwnershipNeutralReceipt) {
+            $this->accounting->post($document, new AccountingPostingData(
+                totalCost: $totalCost,
+                direction: $direction,
+                additionalJournalLines: (array) ($context['additional_journal_lines'] ?? []),
+                serviceCode: isset($context['service_code']) ? (string) $context['service_code'] : null,
+                tenantIdentity: $context['tenant_identity'] ?? null,
+            ));
+        }
 
         foreach ($stockLines as $line) {
             $this->stockCards->refresh($line);
@@ -211,6 +230,8 @@ final class PostingEngine
             'posted_at' => now(),
             'posting_completed_at' => now(),
         ])->save();
+
+        event(new DocumentPosted($document->refresh()->load('lines')));
     }
 
     private function createAndValidateLine(

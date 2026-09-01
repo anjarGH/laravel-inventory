@@ -16,11 +16,13 @@ use ESolution\Inventory\Contracts\AccountingJournalGateway;
 use ESolution\Inventory\Contracts\ApprovalBridge;
 use ESolution\Inventory\Contracts\ApprovalWorkflowGateway;
 use ESolution\Inventory\Contracts\DocumentTypeRegistry;
+use ESolution\Inventory\Contracts\MovementPolicyRegistry;
 use ESolution\Inventory\Models\Document;
 use ESolution\Inventory\Observers\DocumentApprovalObserver;
 use ESolution\Inventory\Services\ConfigurationDepthResolver;
 use ESolution\Inventory\Services\InMemoryDocumentTypeRegistry;
 use ESolution\Inventory\Services\InventoryManager;
+use ESolution\Inventory\Services\MovementPolicyManager;
 use ESolution\Inventory\Services\PolicyEngine;
 use ESolution\Inventory\Services\PostingEngine;
 use ESolution\Inventory\Services\ReservationService;
@@ -80,6 +82,7 @@ final class InventoryServiceProvider extends ServiceProvider
 
             return $registry;
         });
+        $this->app->singleton(MovementPolicyRegistry::class, MovementPolicyManager::class);
 
         $this->app->singleton(ConfigurationDepthResolver::class);
         $this->app->singleton(PolicyEngine::class);

@@ -70,6 +70,11 @@ For Sales reservation, atomic partial fulfillment, walk-in sale, Purchasing
 receipt, and availability examples, see
 [Sales and Purchasing Integration](docs/SALES_PURCHASING_INTEGRATION.md).
 
+The optional Retail vertical is developed as the independent
+`elgibor-solution/laravel-inventory-retail` package under `packages/retail`.
+See [Retail package documentation](packages/retail/README.md) for stock-bearing
+variant matrices, Consignment, POS, and E-Commerce integration.
+
 ## Posting example
 
 ```php

@@ -311,27 +311,27 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Package Retail independently with no sibling vertical dependency.
-- [ ] **P1** Model Product Family, variant axes/options, and stock-bearing variants as distinct Core Items.
-- [ ] **P1** Implement variant matrix generation with deterministic SKU uniqueness and bulk-safe behavior.
-- [ ] **P1** Implement Consignment Movement Policy, item/location resolution, ownership-neutral receipt, sale tracking, and settlement records.
-- [ ] **P1** Keep settlement accounting project-owned; do not call Accounting Bridge from Retail settlement logic.
-- [ ] **P1** Document POS and E-Commerce reservation/fulfillment reference flows.
+- [x] **P1** Package Retail independently with no sibling vertical dependency.
+- [x] **P1** Model Product Family, variant axes/options, and stock-bearing variants as distinct Core Items.
+- [x] **P1** Implement variant matrix generation with deterministic SKU uniqueness and bulk-safe behavior.
+- [x] **P1** Implement Consignment Movement Policy, item/location resolution, ownership-neutral receipt, sale tracking, and settlement records.
+- [x] **P1** Keep settlement accounting project-owned; do not call Accounting Bridge from Retail settlement logic.
+- [x] **P1** Document POS and E-Commerce reservation/fulfillment reference flows.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC5-01** Generated variants are independently stock tracked.
-- [ ] **AC5-02** Sibling variant availability is isolated.
-- [ ] **AC5-03** Consignment receipt updates physical stock.
-- [ ] **AC5-04** Consignment receipt does not assert owned valuation.
-- [ ] **AC5-05** Consignment sale/settlement traceability is correct.
-- [ ] **AC5-06** Item/location policy override precedence works.
-- [ ] **AC5-07** POS flow uses ordinary Core posting.
-- [ ] **AC5-08** E-Commerce flow uses Core Reservation unchanged.
+- [x] **AC5-01** Generated variants are independently stock tracked.
+- [x] **AC5-02** Sibling variant availability is isolated.
+- [x] **AC5-03** Consignment receipt updates physical stock.
+- [x] **AC5-04** Consignment receipt does not assert owned valuation.
+- [x] **AC5-05** Consignment sale/settlement traceability is correct.
+- [x] **AC5-06** Item/location policy override precedence works.
+- [x] **AC5-07** POS flow uses ordinary Core posting.
+- [x] **AC5-08** E-Commerce flow uses Core Reservation unchanged.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-5** AC5-01–AC5-08 pass with both bridges disabled.
+- [ ] **P1 GATE-5** AC5-01–AC5-08 pass with both bridges disabled. *(Retail AC suite passes with Null bridges; formal gate remains blocked by GATE-4 concurrency and PRD-5 AC5-08's real sibling-vertical coexistence matrix.)*
 
 ---
 
