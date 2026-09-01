@@ -75,6 +75,12 @@ The optional Retail vertical is developed as the independent
 See [Retail package documentation](packages/retail/README.md) for stock-bearing
 variant matrices, Consignment, POS, and E-Commerce integration.
 
+The optional WMS vertical is developed as the independent
+`elgibor-solution/laravel-inventory-wms` package under `packages/wms`. See
+[WMS package documentation](packages/wms/README.md) for put-away/picking
+strategies, tasks, waves, LPNs, replenishment, cross-docking, and the TMS
+integration pattern.
+
 ## Posting example
 
 ```php

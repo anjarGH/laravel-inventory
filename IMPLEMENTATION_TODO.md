@@ -342,26 +342,26 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Package WMS independently and implement its vertical-owned tables/migrations.
-- [ ] **P1** Finalize `PutAwayStrategy` and `PickingStrategy` promotion/ownership before coding dependent strategies.
-- [ ] **P1** Implement Fixed/Dynamic/Random/Dedicated/Nearest/Empty-Bin strategies and FIFO/FEFO picking suggestions.
-- [ ] **P1** Implement Task, Wave, Pallet/LPN orchestration through workflow hooks without replacing Core posting.
-- [ ] **P1** Implement internal replenishment scheduler and Cross Docking Movement Policy.
-- [ ] **P2** Publish TMS integration pattern without adding a hard dependency.
+- [x] **P1** Package WMS independently and implement its vertical-owned tables/migrations.
+- [x] **P1** Finalize `PutAwayStrategy` and `PickingStrategy` promotion/ownership before coding dependent strategies.
+- [x] **P1** Implement Fixed/Dynamic/Random/Dedicated/Nearest/Empty-Bin strategies and FIFO/FEFO picking suggestions.
+- [x] **P1** Implement Task, Wave, Pallet/LPN orchestration through workflow hooks without replacing Core posting.
+- [x] **P1** Implement internal replenishment scheduler and Cross Docking Movement Policy.
+- [x] **P2** Publish TMS integration pattern without adding a hard dependency.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC6-01** Put-away strategies produce valid deterministic locations.
-- [ ] **AC6-02** Picking strategies produce valid deterministic suggestions.
-- [ ] **AC6-03** Tasks and waves reflect document transitions without duplicate side effects.
-- [ ] **AC6-04** Pallet/LPN quantities and locations remain consistent.
-- [ ] **AC6-05** Replenishment creates only intended internal work.
-- [ ] **AC6-06** Cross docking changes routing without corrupting costing/ledger.
-- [ ] **AC6-07** WMS has no sibling vertical dependency.
+- [x] **AC6-01** Put-away strategies produce valid deterministic locations.
+- [x] **AC6-02** Picking strategies produce valid deterministic suggestions.
+- [x] **AC6-03** Tasks and waves reflect document transitions without duplicate side effects.
+- [x] **AC6-04** Pallet/LPN quantities and locations remain consistent.
+- [x] **AC6-05** Replenishment creates only intended internal work.
+- [x] **AC6-06** Cross docking changes routing without corrupting costing/ledger.
+- [x] **AC6-07** WMS has no sibling vertical dependency.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-6** AC6-01–AC6-07 and hook-idempotency tests pass.
+- [x] **P1 GATE-6** AC6-01–AC6-07 and hook-idempotency tests pass.
 
 ---
 

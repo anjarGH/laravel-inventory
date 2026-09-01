@@ -7,6 +7,9 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/packages/retail/config',
         __DIR__ . '/packages/retail/database/migrations',
         __DIR__ . '/packages/retail/src',
+        __DIR__ . '/packages/wms/config',
+        __DIR__ . '/packages/wms/database/migrations',
+        __DIR__ . '/packages/wms/src',
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ])

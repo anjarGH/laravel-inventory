@@ -2,13 +2,17 @@ includes:
     - vendor/larastan/larastan/extension.neon
 
 parameters:
+    bootstrapFiles:
+        - phpstan-bootstrap.php
     parallel:
         maximumNumberOfProcesses: 1
     paths:
         - src
         - packages/retail/src
+        - packages/wms/src
     level: 3
     tmpDir: .phpstan.cache
     databaseMigrationsPath:
         - database/migrations
         - packages/retail/database/migrations
+        - packages/wms/database/migrations
