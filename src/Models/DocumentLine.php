@@ -21,4 +21,9 @@ class DocumentLine extends Model
     {
         return $this->hasMany(StockLedger::class);
     }
+
+    public function reservationConsumptions(): HasMany
+    {
+        return $this->hasMany(ReservationConsumption::class);
+    }
 }

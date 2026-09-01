@@ -3,6 +3,7 @@
 namespace ESolution\Inventory\Services;
 
 use ESolution\Inventory\DTO\DocumentData;
+use ESolution\Inventory\DTO\StockAvailability;
 use ESolution\Inventory\Models\Document;
 use ESolution\Inventory\Models\Reservation;
 
@@ -12,6 +13,7 @@ final class InventoryManager
         private readonly PostingEngine $posting,
         private readonly ReservationService $reservations,
         private readonly ResumeApprovedDocument $approvalResume,
+        private readonly StockAvailabilityService $availability,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -37,5 +39,10 @@ final class InventoryManager
     public function consume(int $id, float $qty, string $key, ?int $lineId = null): Reservation
     {
         return $this->reservations->consume($id, $qty, $key, $lineId);
+    }
+
+    public function availability(int $itemId, int $warehouseId): StockAvailability
+    {
+        return $this->availability->forItem($itemId, $warehouseId);
     }
 }

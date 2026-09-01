@@ -66,6 +66,10 @@ php artisan inventory:approval:validate
 See [Approval Bridge](docs/APPROVAL_BRIDGE.md) for submit, callback, status
 ownership, rejection, cancellation, and idempotent resume behavior.
 
+For Sales reservation, atomic partial fulfillment, walk-in sale, Purchasing
+receipt, and availability examples, see
+[Sales and Purchasing Integration](docs/SALES_PURCHASING_INTEGRATION.md).
+
 ## Posting example
 
 ```php
@@ -75,7 +79,7 @@ use ESolution\Inventory\Facades\Inventory;
 
 $document = Inventory::post(new DocumentData(
     type: 'purchase_receipt',
-    organizationId: $warehouseId,
+    organizationId: $organizationId,
     trxDate: now()->toDateString(),
     externalId: 'GR-001',
     lines: [

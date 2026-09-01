@@ -149,9 +149,9 @@
 
 ### Reservation and Reporting Core
 
-- [ ] **P0** Implement transactional `reserve`, `release`, and repeated partial `consume` operations with row locks.
+- [x] **P0** Implement transactional `reserve`, `release`, and repeated partial `consume` operations with row locks.
 - [x] **P0 PATCH-RESERVATION** Reject over-consumption/over-release and require a fulfillment idempotency key for each consume operation.
-- [ ] **P0 PATCH-RESERVATION** Link reservation consumption to Goods Issue/document line and support exact audit/reporting without inferring state from unrelated ledger rows.
+- [x] **P0 PATCH-RESERVATION** Link reservation consumption to Goods Issue/document line and support exact audit/reporting without inferring state from unrelated ledger rows.
 - [x] **P0** Ensure Reservation operations never write ledger/cost layers or invoke either bridge.
 - [ ] **P0** Implement scoped Ledger, Stock Card, valuation, movement, and available-stock query services.
 - [ ] **P1** Implement reorder notification deduplication, scheduled checks, and reconciliation commands.
@@ -282,25 +282,25 @@
 
 ### Design, Implementation, and Tests
 
-- [ ] **P0** Publish reference Sales integration for reserve, cancel/release, partial fulfillment, and walk-in sale.
-- [ ] **P0** Wrap Goods Issue posting and reservation consumption in the same transaction.
-- [ ] **P0** Publish Purchasing integration that bypasses Reservation and posts Goods Receipt directly.
-- [ ] **P0** Use fulfillment idempotency keys and exact consumption linkage added by PATCH-RESERVATION.
-- [ ] **P0** Test retries, partial shipments, over-consumption, failed Goods Issue rollback, release, and zero bridge calls.
+- [x] **P0** Publish reference Sales integration for reserve, cancel/release, partial fulfillment, and walk-in sale.
+- [x] **P0** Wrap Goods Issue posting and reservation consumption in the same transaction, including deferred consumption during Approval pause/resume.
+- [x] **P0** Publish Purchasing integration that bypasses Reservation and posts Goods Receipt directly.
+- [x] **P0** Use fulfillment idempotency keys and exact consumption linkage added by PATCH-RESERVATION.
+- [x] **P0** Test retries, partial shipments, over-consumption, failed Goods Issue/accounting rollback, release, and zero bridge calls.
 
 ### Acceptance Criteria
 
-- [ ] **AC4-01** Sales confirmation reserves and decreases availability only.
-- [ ] **AC4-02** Fulfillment posts issue and consumes matching reservation atomically.
-- [ ] **AC4-03** Release restores availability without ledger effects.
-- [ ] **AC4-04** Reservation operations never invoke bridges.
-- [ ] **AC4-05** Repeated partial consumption closes only when exhausted.
-- [ ] **AC4-06** Walk-in issue works without prior reservation.
-- [ ] **AC4-07** Purchasing receipt requires no reservation.
+- [x] **AC4-01** Sales confirmation reserves and decreases availability only.
+- [x] **AC4-02** Fulfillment posts issue and consumes matching reservation atomically.
+- [x] **AC4-03** Release restores availability without ledger effects.
+- [x] **AC4-04** Reservation operations never invoke bridges.
+- [x] **AC4-05** Repeated partial consumption closes only when exhausted.
+- [x] **AC4-06** Walk-in issue works without prior reservation.
+- [x] **AC4-07** Purchasing receipt requires no reservation.
 
 ### Exit Gate
 
-- [ ] **P0 GATE-4** AC4-01–AC4-07 and retry/concurrency tests pass.
+- [ ] **P0 GATE-4** AC4-01–AC4-07 and retry/concurrency tests pass. *(All functional AC and sequential retry tests pass; true parallel reservation enforcement still requires the MySQL/PostgreSQL multi-connection harness.)*
 
 ---
 

@@ -10,6 +10,7 @@ use ESolution\Inventory\DTO\AccountingPostingData;
 use ESolution\Inventory\DTO\ApprovalContext;
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;
+use ESolution\Inventory\DTO\ReservationConsumptionData;
 use ESolution\Inventory\Enums\DocumentStatus;
 use ESolution\Inventory\Models\Batch;
 use ESolution\Inventory\Models\CostAdjustment;
@@ -33,6 +34,7 @@ final class PostingEngine
         private readonly AccountingBridge $accounting,
         private readonly ApprovalBridge $approval,
         private readonly TenantResolver $tenants,
+        private readonly ReservationService $reservations,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -58,6 +60,7 @@ final class PostingEngine
             }
 
             $definition = $this->documentTypes->get($data->type);
+            $this->validateReservationConsumptions($data, $definition->direction);
             $meta = $data->meta;
             $meta['_accounting_context'] = [
                 'additional_journal_lines' => $data->additionalJournalLines,
@@ -70,6 +73,10 @@ final class PostingEngine
                 'metadata' => $data->approvalMetadata,
                 'tenant_identity' => $data->tenantIdentity,
             ];
+            $meta['_reservation_consumptions'] = array_map(
+                static fn(ReservationConsumptionData $consumption): array => get_object_vars($consumption),
+                $data->reservationConsumptions,
+            );
             $document = Document::create([
                 'document_type' => $data->type,
                 'organization_id' => $data->organizationId,
@@ -181,6 +188,8 @@ final class PostingEngine
             $stockLines[] = $line;
         }
 
+        $this->consumeLinkedReservations($document);
+
         $context = (array) ($document->meta['_accounting_context'] ?? []);
         $totalCost = (float) StockLedger::query()
             ->whereIn('document_line_id', $document->lines()->select('id'))
@@ -269,6 +278,53 @@ final class PostingEngine
         $line->save();
 
         return $line;
+    }
+
+    private function validateReservationConsumptions(DocumentData $data, string $direction): void
+    {
+        if ($data->reservationConsumptions === []) {
+            return;
+        }
+        if ($direction !== 'out') {
+            throw new \DomainException('Reservation consumption can only be linked to an outbound document.');
+        }
+        if ($data->sourceId === null || $data->sourceId === '') {
+            throw new \DomainException('A reservation fulfillment requires the document source reference.');
+        }
+
+        $keys = [];
+        foreach ($data->reservationConsumptions as $consumption) {
+            if (! $consumption instanceof ReservationConsumptionData) {
+                throw new \InvalidArgumentException('Reservation consumptions must use ReservationConsumptionData.');
+            }
+            if ($consumption->lineNo < 1 || ! isset($data->lines[$consumption->lineNo - 1])) {
+                throw new \DomainException('Reservation fulfillment references an unknown document line.');
+            }
+            if ($consumption->qty <= 0 || $consumption->idempotencyKey === '' || strlen($consumption->idempotencyKey) > 128) {
+                throw new \DomainException('Reservation fulfillment requires a positive quantity and a valid idempotency key.');
+            }
+
+            $scopedKey = $consumption->reservationId . ':' . $consumption->idempotencyKey;
+            if (isset($keys[$scopedKey])) {
+                throw new \DomainException('A reservation fulfillment key may only appear once in a document payload.');
+            }
+            $keys[$scopedKey] = true;
+        }
+    }
+
+    private function consumeLinkedReservations(Document $document): void
+    {
+        foreach ((array) ($document->meta['_reservation_consumptions'] ?? []) as $consumption) {
+            $line = $document->lines()
+                ->where('line_no', (int) ($consumption['lineNo'] ?? 0))
+                ->firstOrFail();
+            $this->reservations->consume(
+                (int) ($consumption['reservationId'] ?? 0),
+                (float) ($consumption['qty'] ?? 0),
+                (string) ($consumption['idempotencyKey'] ?? ''),
+                (int) $line->getKey(),
+            );
+        }
     }
 
     private function receive(DocumentLine $line, bool $costing): void
@@ -448,6 +504,10 @@ final class PostingEngine
     {
         $payload = get_object_vars($data);
         $payload['lines'] = array_map(static fn(LineData $line): array => get_object_vars($line), $data->lines);
+        $payload['reservationConsumptions'] = array_map(
+            static fn(ReservationConsumptionData $consumption): array => get_object_vars($consumption),
+            $data->reservationConsumptions,
+        );
 
         return hash('sha256', (string) json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR));
     }

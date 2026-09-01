@@ -7,7 +7,8 @@ return [
     'idempotency' => ['mode' => 'return_existing'],
     'policies' => [
         'posting' => ['enabled' => true],
-        'negative_stock' => ['mode' => 'block'],
+        // Add "reservation" to applies_to when backorders must be rejected at reservation time.
+        'negative_stock' => ['mode' => 'block', 'applies_to' => ['goods_issue']],
         'certificate' => ['enabled' => false, 'categories' => []],
         'reservation' => ['enabled' => true],
     ],

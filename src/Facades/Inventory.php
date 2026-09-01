@@ -3,6 +3,7 @@
 namespace ESolution\Inventory\Facades;
 
 use ESolution\Inventory\DTO\DocumentData;
+use ESolution\Inventory\DTO\StockAvailability;
 use ESolution\Inventory\Models\Document;
 use ESolution\Inventory\Models\Reservation;
 use Illuminate\Support\Facades\Facade;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Reservation reserve(int $itemId, float $qty, int $warehouseId, string $sourceType, string $sourceId)
  * @method static Reservation release(int $reservationId, ?float $qty = null)
  * @method static Reservation consume(int $reservationId, float $qty, string $idempotencyKey, ?int $documentLineId = null)
+ * @method static StockAvailability availability(int $itemId, int $warehouseId)
  */
 final class Inventory extends Facade
 {

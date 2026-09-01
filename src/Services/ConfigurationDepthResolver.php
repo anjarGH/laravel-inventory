@@ -28,6 +28,11 @@ final class ConfigurationDepthResolver
             }
         }
 
+        $reservationTargets = (array) ($config['policies']['negative_stock']['applies_to'] ?? ['goods_issue']);
+        if (array_diff($reservationTargets, ['goods_issue', 'reservation']) !== []) {
+            $errors[] = 'Negative-stock applies_to only supports goods_issue and reservation.';
+        }
+
         return $errors;
     }
 

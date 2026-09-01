@@ -11,6 +11,7 @@ $finder = PhpCsFixer\Finder::create()
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
+    ->setLineEnding(PHP_EOL)
     ->setRules([
         '@PER-CS2.0' => true,
         'array_syntax' => ['syntax' => 'short'],

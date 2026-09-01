@@ -25,6 +25,7 @@ use ESolution\Inventory\Services\PolicyEngine;
 use ESolution\Inventory\Services\PostingEngine;
 use ESolution\Inventory\Services\ReservationService;
 use ESolution\Inventory\Services\ResumeApprovedDocument;
+use ESolution\Inventory\Services\StockAvailabilityService;
 use ESolution\Inventory\Services\StockCardManager;
 use ESolution\Inventory\Services\WorkflowEngine;
 use ESolution\Inventory\Support\ApprovalPackageInspector;
@@ -84,6 +85,7 @@ final class InventoryServiceProvider extends ServiceProvider
         $this->app->singleton(PolicyEngine::class);
         $this->app->singleton(WorkflowEngine::class);
         $this->app->singleton(StockCardManager::class);
+        $this->app->singleton(StockAvailabilityService::class);
         $this->app->singleton(ReservationService::class);
         $this->app->singleton(PostingEngine::class);
         $this->app->singleton(ResumeApprovedDocument::class);

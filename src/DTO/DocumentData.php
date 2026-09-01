@@ -6,7 +6,8 @@ final class DocumentData
 {
     /**
      * @param list<LineData>                 $lines
-     * @param list<array<string, mixed>>     $additionalJournalLines
+     * @param list<array<string, mixed>>       $additionalJournalLines
+     * @param list<ReservationConsumptionData> $reservationConsumptions
      */
     public function __construct(
         public string $type,
@@ -25,5 +26,6 @@ final class DocumentData
         public string $approvalAction = 'create',
         public array $approvalData = [],
         public array $approvalMetadata = [],
+        public array $reservationConsumptions = [],
     ) {}
 }
