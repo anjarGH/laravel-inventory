@@ -8,6 +8,7 @@ parameters:
         maximumNumberOfProcesses: 1
     paths:
         - src
+        - packages/healthcare/src
         - packages/manufacturing/src
         - packages/retail/src
         - packages/wms/src
@@ -15,6 +16,7 @@ parameters:
     tmpDir: .phpstan.cache
     databaseMigrationsPath:
         - database/migrations
+        - packages/healthcare/database/migrations
         - packages/manufacturing/database/migrations
         - packages/retail/database/migrations
         - packages/wms/database/migrations

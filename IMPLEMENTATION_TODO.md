@@ -403,28 +403,28 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Publish Healthcare preset for mandatory batch, FEFO, COA, and expiry behavior.
-- [ ] **P1 PATCH-FEFO** Implement deterministic FEFO: non-null expiry first, `expires_at ASC`, `received_at ASC`, `id ASC`.
-- [ ] **P1 PATCH-FEFO** Exclude expired/recalled batches; place null expiry last or reject it when Healthcare policy requires expiry.
-- [ ] **P1** Implement expiry enforcement gate on Goods Issue while allowing controlled expired receipt for disposal tracking.
-- [ ] **P1** Implement Recall records, batch-specific posting veto, and forward trace.
-- [ ] **P1** Keep FEFO independent from WMS physical picking.
+- [x] **P1** Publish Healthcare preset for mandatory batch, FEFO, COA, and expiry behavior.
+- [x] **P1 PATCH-FEFO** Implement deterministic FEFO: non-null expiry first, `expires_at ASC`, `received_at ASC`, `id ASC`.
+- [x] **P1 PATCH-FEFO** Exclude expired/recalled batches; place null expiry last or reject it when Healthcare policy requires expiry.
+- [x] **P1** Implement expiry enforcement gate on Goods Issue while allowing controlled expired receipt for disposal tracking.
+- [x] **P1** Implement Recall records, batch-specific posting veto, and forward trace.
+- [x] **P1** Keep FEFO independent from WMS physical picking.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC8-01** Healthcare preset merges correctly.
-- [ ] **AC8-02** FEFO consumes earliest valid expiry regardless of receipt order.
-- [ ] **AC8-03** FEFO works with WMS absent.
-- [ ] **AC8-04** Expired Goods Issue is blocked.
-- [ ] **AC8-05** Controlled expired receipt remains traceable.
-- [ ] **AC8-06** Recall blocks only the recalled batch.
-- [ ] **AC8-07** Recall forward trace identifies affected outbound documents.
-- [ ] **AC8-08** COA policy is enforced.
-- [ ] **AC8-09** Healthcare has no sibling vertical dependency.
+- [x] **AC8-01** Healthcare preset merges correctly.
+- [x] **AC8-02** FEFO consumes earliest valid expiry regardless of receipt order.
+- [x] **AC8-03** FEFO works with WMS absent.
+- [x] **AC8-04** Expired Goods Issue is blocked.
+- [x] **AC8-05** Controlled expired receipt remains traceable.
+- [x] **AC8-06** Recall blocks only the recalled batch.
+- [x] **AC8-07** Recall forward trace identifies affected outbound documents.
+- [x] **AC8-08** COA policy is enforced.
+- [x] **AC8-09** Healthcare has no sibling vertical dependency.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-8** AC8-01–AC8-09 and deterministic FEFO tests pass.
+- [x] **P1 GATE-8** AC8-01–AC8-09 and deterministic FEFO tests pass.
 
 ---
 

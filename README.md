@@ -87,6 +87,12 @@ The optional Manufacturing vertical is developed as the independent
 for immutable versioned BOMs, atomic production orchestration, WIP chaining,
 variance tracking, and the accounting blocker.
 
+The optional Healthcare vertical is developed as the independent
+`elgibor-solution/laravel-inventory-healthcare` package under
+`packages/healthcare`. See [Healthcare package documentation](packages/healthcare/README.md)
+for the tracking preset, Core-owned deterministic FEFO, controlled expired
+receipts, COA enforcement, recall veto, and forward traceability.
+
 ## Posting example
 
 ```php

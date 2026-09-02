@@ -4,6 +4,9 @@ $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/config',
         __DIR__ . '/database/migrations',
+        __DIR__ . '/packages/healthcare/config',
+        __DIR__ . '/packages/healthcare/database/migrations',
+        __DIR__ . '/packages/healthcare/src',
         __DIR__ . '/packages/manufacturing/config',
         __DIR__ . '/packages/manufacturing/database/migrations',
         __DIR__ . '/packages/manufacturing/src',

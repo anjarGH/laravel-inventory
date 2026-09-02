@@ -39,6 +39,7 @@ final class PostingEngine
         private readonly TenantResolver $tenants,
         private readonly ReservationService $reservations,
         private readonly MovementPolicyRegistry $movementPolicies,
+        private readonly TrackingPolicy $tracking,
     ) {}
 
     public function post(DocumentData $data): Document
@@ -257,15 +258,7 @@ final class PostingEngine
         if ($batch !== null && (int) $batch->item_id !== $data->itemId) {
             throw new \DomainException("Line {$lineNo}: batch belongs to a different item.");
         }
-
-        if ($batch !== null && $direction === 'out') {
-            if (in_array($batch->status, ['recalled', 'blocked'], true)) {
-                throw new \DomainException("Line {$lineNo}: batch is not available for issue.");
-            }
-            if ($batch->expires_at !== null && $batch->expires_at->isBefore(now()->startOfDay())) {
-                throw new \DomainException("Line {$lineNo}: expired batch cannot be issued.");
-            }
-        }
+        $this->tracking->validateLine($item, $batch, $direction, $data, $document->trx_date);
 
         $serial = $data->serialId === null ? null : Serial::query()->findOrFail($data->serialId);
         if ($serial !== null) {
@@ -425,14 +418,15 @@ final class PostingEngine
         $remaining = (float) $line->qty + (float) $line->qty_bonus;
         $totalQuantity = $remaining;
 
-        $layers = CostLayer::query()
-            ->where('item_id', $line->item_id)
-            ->where('scope_type', $scopeType)
-            ->where('scope_id', $scopeId)
-            ->where('remaining_qty', '>', 0)
-            ->when($line->batch_id !== null, fn(Builder $query) => $query->where('batch_id', $line->batch_id))
-            ->orderBy('received_at')
-            ->orderBy('id')
+        $item = Item::query()->findOrFail($line->item_id);
+        $layersQuery = CostLayer::query()
+            ->where('inv_cost_layers.item_id', $line->item_id)
+            ->where('inv_cost_layers.scope_type', $scopeType)
+            ->where('inv_cost_layers.scope_id', $scopeId)
+            ->where('inv_cost_layers.remaining_qty', '>', 0)
+            ->when($line->batch_id !== null, fn(Builder $query) => $query->where('inv_cost_layers.batch_id', $line->batch_id));
+        $layers = $this->tracking
+            ->prepareIssueLayers($layersQuery, $item, Document::query()->findOrFail($line->document_id)->trx_date)
             ->lockForUpdate()
             ->get();
 

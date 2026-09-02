@@ -193,3 +193,46 @@ it('keeps the Manufacturing package dependent on Core only and inside its namesp
         }
     }
 });
+
+it('keeps the Healthcare package dependent on Core only and inside its namespace and table prefix', function (): void {
+    $root = dirname(__DIR__, 2);
+    $healthcareRoot = $root . '/packages/healthcare';
+    $composer = json_decode(
+        file_get_contents($healthcareRoot . '/composer.json'),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+    $dependencies = array_keys($composer['require'] ?? []);
+
+    expect($dependencies)->toContain('elgibor-solution/laravel-inventory');
+    foreach ($dependencies as $dependency) {
+        if ($dependency !== 'elgibor-solution/laravel-inventory') {
+            expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
+        }
+    }
+
+    $siblingNamespaces = [
+        'ESolution\\InventoryRetail\\',
+        'ESolution\\InventoryWms\\',
+        'ESolution\\InventoryManufacturing\\',
+        'ESolution\\InventoryFood\\',
+        'ESolution\\InventoryAsset\\',
+        'ESolution\\InventoryProject\\',
+        'ESolution\\InventoryAutomotive\\',
+        'ESolution\\InventoryLibrary\\',
+    ];
+    foreach (inventoryPhpFiles($healthcareRoot . '/src') as $file) {
+        $source = file_get_contents($file);
+        expect($source)->toContain('namespace ESolution\\InventoryHealthcare');
+        foreach ($siblingNamespaces as $namespace) {
+            expect($source)->not->toContain($namespace, "Healthcare file {$file} imports sibling {$namespace}");
+        }
+    }
+
+    foreach (inventoryPhpFiles($healthcareRoot . '/database/migrations') as $file) {
+        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $matches);
+        foreach ($matches[1] as $table) {
+            expect($table)->toStartWith('invh_');
+        }
+    }
+});
