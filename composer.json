@@ -14,6 +14,7 @@
   "autoload-dev": {
     "psr-4": {
       "ESolution\\Inventory\\Tests\\": "tests/",
+      "ESolution\\InventoryManufacturing\\": "packages/manufacturing/src/",
       "ESolution\\InventoryRetail\\": "packages/retail/src/",
       "ESolution\\InventoryWms\\": "packages/wms/src/"
     }

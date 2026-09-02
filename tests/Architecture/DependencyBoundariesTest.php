@@ -147,3 +147,49 @@ it('keeps the WMS package dependent on Core only and inside its namespace and ta
         }
     }
 });
+
+it('keeps the Manufacturing package dependent on Core only and inside its namespace and table prefix', function (): void {
+    $root = dirname(__DIR__, 2);
+    $manufacturingRoot = $root . '/packages/manufacturing';
+    $composer = json_decode(
+        file_get_contents($manufacturingRoot . '/composer.json'),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+    $dependencies = array_keys($composer['require'] ?? []);
+
+    expect($dependencies)->toContain('elgibor-solution/laravel-inventory');
+    foreach ($dependencies as $dependency) {
+        if ($dependency !== 'elgibor-solution/laravel-inventory') {
+            expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
+        }
+    }
+
+    $siblingNamespaces = [
+        'ESolution\\InventoryRetail\\',
+        'ESolution\\InventoryWms\\',
+        'ESolution\\InventoryHealthcare\\',
+        'ESolution\\InventoryFood\\',
+        'ESolution\\InventoryAsset\\',
+        'ESolution\\InventoryProject\\',
+        'ESolution\\InventoryAutomotive\\',
+        'ESolution\\InventoryLibrary\\',
+    ];
+    foreach (inventoryPhpFiles($manufacturingRoot . '/src') as $file) {
+        $source = file_get_contents($file);
+        expect($source)->toContain('namespace ESolution\\InventoryManufacturing');
+        foreach ($siblingNamespaces as $namespace) {
+            expect($source)->not->toContain($namespace, "Manufacturing file {$file} imports sibling {$namespace}");
+        }
+        expect($source)->not->toContain('StockLedger::create')
+            ->and($source)->not->toContain('CostLayer::create')
+            ->and($source)->not->toContain('implements MovementPolicy');
+    }
+
+    foreach (inventoryPhpFiles($manufacturingRoot . '/database/migrations') as $file) {
+        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $matches);
+        foreach ($matches[1] as $table) {
+            expect($table)->toStartWith('invm_');
+        }
+    }
+});

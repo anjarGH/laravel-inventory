@@ -81,6 +81,12 @@ The optional WMS vertical is developed as the independent
 strategies, tasks, waves, LPNs, replenishment, cross-docking, and the TMS
 integration pattern.
 
+The optional Manufacturing vertical is developed as the independent
+`elgibor-solution/laravel-inventory-manufacturing` package under
+`packages/manufacturing`. See [Manufacturing package documentation](packages/manufacturing/README.md)
+for immutable versioned BOMs, atomic production orchestration, WIP chaining,
+variance tracking, and the accounting blocker.
+
 ## Posting example
 
 ```php

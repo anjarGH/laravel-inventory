@@ -372,27 +372,27 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Implement immutable versioned BOMs and validate allowed component/output Item Types.
-- [ ] **P1** Implement Production Order orchestration using ordinary Production Consumption/Receipt actions.
-- [ ] **P1** Roll actual component CostResult into output receipt unit cost.
-- [ ] **P1** Support MTS/MTO/BTO/ATO source linkage and chained WIP without a new Movement Policy.
-- [ ] **P1** Record scrap/yield variance without mutating posted movements.
-- [ ] **P0 BLOCKER** Keep Manufacturing accounting disabled/fail-closed until verified service codes exist.
+- [x] **P1** Implement immutable versioned BOMs and validate allowed component/output Item Types.
+- [x] **P1** Implement Production Order orchestration using ordinary Production Consumption/Receipt actions.
+- [x] **P1** Roll actual component CostResult into output receipt unit cost.
+- [x] **P1** Support MTS/MTO/BTO/ATO source linkage and chained WIP without a new Movement Policy.
+- [x] **P1** Record scrap/yield variance without mutating posted movements.
+- [x] **P0 BLOCKER** Keep Manufacturing accounting disabled/fail-closed until verified service codes exist. *(Guard rejects completion before stock effects whenever Core/Manufacturing accounting is enabled or a non-Null bridge is resolved; verified service codes remain intentionally unavailable.)*
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC7-01** BOM version used by production remains immutable/traceable.
-- [ ] **AC7-02** Consumption reduces valid component stock.
-- [ ] **AC7-03** Receipt creates output stock from actual rolled-up cost.
-- [ ] **AC7-04** Production pair is transactionally consistent.
-- [ ] **AC7-05** MTO/BTO/ATO source references remain traceable.
-- [ ] **AC7-06** Multi-stage WIP chaining works.
-- [ ] **AC7-07** Variance records are correct and immutable.
-- [ ] **AC7-08** No sibling dependency or duplicate Core posting logic exists.
+- [x] **AC7-01** BOM version used by production remains immutable/traceable.
+- [x] **AC7-02** Consumption reduces valid component stock.
+- [x] **AC7-03** Receipt creates output stock from actual rolled-up cost.
+- [x] **AC7-04** Production pair is transactionally consistent.
+- [x] **AC7-05** MTO/BTO/ATO source references remain traceable.
+- [x] **AC7-06** Multi-stage WIP chaining works.
+- [x] **AC7-07** Variance records are correct and immutable.
+- [x] **AC7-08** No sibling dependency or duplicate Core posting logic exists.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-7** AC7-01–AC7-08 pass; accounting remains explicitly fail-closed until blocker resolution.
+- [x] **P1 GATE-7** AC7-01–AC7-08 pass; accounting remains explicitly fail-closed until blocker resolution.
 
 ---
 
