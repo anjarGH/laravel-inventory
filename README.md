@@ -93,6 +93,12 @@ The optional Healthcare vertical is developed as the independent
 for the tracking preset, Core-owned deterministic FEFO, controlled expired
 receipts, COA enforcement, recall veto, and forward traceability.
 
+The optional Food vertical is developed as the independent
+`elgibor-solution/laravel-inventory-food` package under `packages/food`. See
+[Food package documentation](packages/food/README.md) for immutable versioned
+Recipes, idempotent MTO triggers, atomic RecipeBatch actual-cost roll-up, the
+Halal tracking preset, optional Core FEFO, and the accounting blocker.
+
 ## Posting example
 
 ```php

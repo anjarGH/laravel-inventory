@@ -236,3 +236,49 @@ it('keeps the Healthcare package dependent on Core only and inside its namespace
         }
     }
 });
+
+it('keeps the Food package dependent on Core only and inside its namespace and table prefix', function (): void {
+    $root = dirname(__DIR__, 2);
+    $foodRoot = $root . '/packages/food';
+    $composer = json_decode(
+        file_get_contents($foodRoot . '/composer.json'),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+    $dependencies = array_keys($composer['require'] ?? []);
+
+    expect($dependencies)->toContain('elgibor-solution/laravel-inventory');
+    foreach ($dependencies as $dependency) {
+        if ($dependency !== 'elgibor-solution/laravel-inventory') {
+            expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
+        }
+    }
+
+    $siblingNamespaces = [
+        'ESolution\\InventoryRetail\\',
+        'ESolution\\InventoryWms\\',
+        'ESolution\\InventoryManufacturing\\',
+        'ESolution\\InventoryHealthcare\\',
+        'ESolution\\InventoryAsset\\',
+        'ESolution\\InventoryProject\\',
+        'ESolution\\InventoryAutomotive\\',
+        'ESolution\\InventoryLibrary\\',
+    ];
+    foreach (inventoryPhpFiles($foodRoot . '/src') as $file) {
+        $source = file_get_contents($file);
+        expect($source)->toContain('namespace ESolution\\InventoryFood');
+        foreach ($siblingNamespaces as $namespace) {
+            expect($source)->not->toContain($namespace, "Food file {$file} imports sibling {$namespace}");
+        }
+        expect($source)->not->toContain('StockLedger::create')
+            ->and($source)->not->toContain('CostLayer::create')
+            ->and($source)->not->toContain('implements MovementPolicy');
+    }
+
+    foreach (inventoryPhpFiles($foodRoot . '/database/migrations') as $file) {
+        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $matches);
+        foreach ($matches[1] as $table) {
+            expect($table)->toStartWith('invf_');
+        }
+    }
+});

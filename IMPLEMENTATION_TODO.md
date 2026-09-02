@@ -435,29 +435,29 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Implement immutable versioned Recipes and component Item Type validation.
-- [ ] **P1** Register `recipe_consumption` and `recipe_receipt` using ordinary Core actions.
-- [ ] **P1** Implement Made-to-Order transition hook with duplicate-trigger protection.
-- [ ] **P1** Implement Made-to-Stock RecipeBatch pairing consumption and receipt atomically with actual cost roll-up.
-- [ ] **P1** Publish Food preset with Halal certificate policy.
-- [ ] **P1** Do not import Manufacturing or Healthcare; document optional project-provided FEFO.
-- [ ] **P0 BLOCKER** Keep Food accounting disabled/fail-closed until verified service codes exist.
+- [x] **P1** Implement immutable versioned Recipes and component Item Type validation.
+- [x] **P1** Register `recipe_consumption` and `recipe_receipt` using ordinary Core actions.
+- [x] **P1** Implement Made-to-Order transition hook with duplicate-trigger protection.
+- [x] **P1** Implement Made-to-Stock RecipeBatch pairing consumption and receipt atomically with actual cost roll-up.
+- [x] **P1** Publish Food preset with Halal certificate policy.
+- [x] **P1** Do not import Manufacturing or Healthcare; document optional project-provided FEFO.
+- [x] **P0 BLOCKER** Keep Food accounting disabled/fail-closed until verified service codes exist.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC9-01** Recipe versions remain immutable/traceable.
-- [ ] **AC9-02** Recipe Document Types post through Core correctly.
-- [ ] **AC9-03** Made-to-Order trigger runs exactly once.
-- [ ] **AC9-04** RecipeBatch pairs consumption/receipt consistently.
-- [ ] **AC9-05** Output cost uses actual component cost.
-- [ ] **AC9-06** Food preset and Halal policy merge correctly.
-- [ ] **AC9-07** Invalid component types are rejected.
-- [ ] **AC9-08** Accounting gap fails closed.
-- [ ] **AC9-09** Food has no sibling vertical dependency.
+- [x] **AC9-01** Recipe versions remain immutable/traceable.
+- [x] **AC9-02** Recipe Document Types post through Core correctly.
+- [x] **AC9-03** Made-to-Order trigger runs exactly once.
+- [x] **AC9-04** RecipeBatch pairs consumption/receipt consistently.
+- [x] **AC9-05** Output cost uses actual component cost.
+- [x] **AC9-06** Food preset and Halal policy merge correctly.
+- [x] **AC9-07** Invalid component types are rejected.
+- [x] **AC9-08** Accounting gap fails closed.
+- [x] **AC9-09** Food has no sibling vertical dependency.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-9** AC9-01–AC9-09 pass; accounting blocker remains explicit.
+- [x] **P1 GATE-9** AC9-01–AC9-09 pass; accounting blocker remains explicit.
 
 ---
 
