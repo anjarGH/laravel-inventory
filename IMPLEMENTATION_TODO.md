@@ -468,28 +468,28 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Publish Asset preset with serial tracking.
-- [ ] **P1** Implement Check-Out records wrapping one Core Reservation; check-in releases it without ledger effects.
-- [ ] **P0 PATCH-CHECKOUT** Move availability/double-check checks inside one transaction and lock the Serial row before creating a checkout.
-- [ ] **P0 PATCH-CHECKOUT** Enforce one active allocation per serial using a portable unique active-allocation table/key, not `exists()` alone.
-- [ ] **P1** Keep overdue status derived at read time and scheduled detection notification-only.
-- [ ] **P1** Keep Check-Out record authoritative for loan status; document Core serial-status limitation.
+- [x] **P1** Publish Asset preset with serial tracking.
+- [x] **P1** Implement Check-Out records wrapping one Core Reservation; check-in releases it without ledger effects.
+- [x] **P0 PATCH-CHECKOUT** Move availability/double-check checks inside one transaction and lock the Serial row before creating a checkout.
+- [x] **P0 PATCH-CHECKOUT** Enforce one active allocation per serial using a portable unique active-allocation table/key, not `exists()` alone.
+- [x] **P1** Keep overdue status derived at read time and scheduled detection notification-only.
+- [x] **P1** Keep Check-Out record authoritative for loan status; document Core serial-status limitation.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC10-01** Asset preset enables required tracking.
-- [ ] **AC10-02** Check-out reserves exactly one valid serialized Asset.
-- [ ] **AC10-03** Check-in releases reservation without stock movement.
-- [ ] **AC10-04** On-hand stays unchanged throughout loan.
-- [ ] **AC10-05** Invalid Item Type/serial is rejected.
-- [ ] **AC10-06** Concurrent checkout cannot double-allocate a serial.
-- [ ] **AC10-07** Overdue detection is derived and notification-only.
-- [ ] **AC10-08** Asset adds no Document Type/MovementPolicy/CostingDriver.
-- [ ] **AC10-09** Asset has no sibling vertical dependency and works with bridges disabled.
+- [x] **AC10-01** Asset preset enables required tracking.
+- [x] **AC10-02** Check-out reserves exactly one valid serialized Asset.
+- [x] **AC10-03** Check-in releases reservation without stock movement.
+- [x] **AC10-04** On-hand stays unchanged throughout loan.
+- [x] **AC10-05** Invalid Item Type/serial is rejected.
+- [x] **AC10-06** Concurrent checkout cannot double-allocate a serial.
+- [x] **AC10-07** Overdue detection is derived and notification-only.
+- [x] **AC10-08** Asset adds no Document Type/MovementPolicy/CostingDriver.
+- [x] **AC10-09** Asset has no sibling vertical dependency and works with bridges disabled.
 
 ### Exit Gate
 
-- [ ] **P0 GATE-10** AC10-01–AC10-09 and double-checkout concurrency tests pass.
+- [x] **P0 GATE-10** AC10-01–AC10-09 and double-checkout concurrency tests pass.
 
 ---
 

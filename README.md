@@ -99,6 +99,12 @@ The optional Food vertical is developed as the independent
 Recipes, idempotent MTO triggers, atomic RecipeBatch actual-cost roll-up, the
 Halal tracking preset, optional Core FEFO, and the accounting blocker.
 
+The optional Asset vertical is developed as the independent
+`elgibor-solution/laravel-inventory-asset` package under `packages/asset`. See
+[Asset package documentation](packages/asset/README.md) for serialized checkout,
+portable active-allocation protection, Reservation-based loans, derived overdue
+notification, and the documented Core serial-status limitation.
+
 ## Posting example
 
 ```php

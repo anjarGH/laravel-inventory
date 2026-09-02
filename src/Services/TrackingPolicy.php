@@ -21,6 +21,9 @@ final class TrackingPolicy
     ): void {
         $tracking = (array) ($item->tracking ?? []);
         if ($direction === 'in') {
+            if (($tracking['serial_required_on_receipt'] ?? false) && $line->serialId === null) {
+                throw new \DomainException('Tracked Item receipt requires a serial.');
+            }
             if (($tracking['batch_required_on_receipt'] ?? false) && $batch === null) {
                 throw new \DomainException('This item requires a batch on receipt.');
             }
@@ -38,6 +41,10 @@ final class TrackingPolicy
             }
 
             return;
+        }
+
+        if (($tracking['serial_required_on_issue'] ?? false) && $line->serialId === null) {
+            throw new \DomainException('Tracked Item issue requires a serial.');
         }
 
         if ($batch === null) {
