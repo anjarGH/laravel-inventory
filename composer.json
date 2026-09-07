@@ -18,6 +18,7 @@
       "ESolution\\InventoryFood\\": "packages/food/src/",
       "ESolution\\InventoryHealthcare\\": "packages/healthcare/src/",
       "ESolution\\InventoryManufacturing\\": "packages/manufacturing/src/",
+      "ESolution\\InventoryProject\\": "packages/project/src/",
       "ESolution\\InventoryRetail\\": "packages/retail/src/",
       "ESolution\\InventoryWms\\": "packages/wms/src/"
     }

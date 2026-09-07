@@ -330,3 +330,51 @@ it('keeps the Asset package dependent on Core only and inside its namespace and 
         }
     }
 });
+
+it('keeps the Project package dependent on Core only and inside its namespace and table prefix', function (): void {
+    $root = dirname(__DIR__, 2);
+    $projectRoot = $root . '/packages/project';
+    $composer = json_decode(
+        file_get_contents($projectRoot . '/composer.json'),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+    $dependencies = array_keys($composer['require'] ?? []);
+
+    expect($dependencies)->toContain('elgibor-solution/laravel-inventory');
+    foreach ($dependencies as $dependency) {
+        if ($dependency !== 'elgibor-solution/laravel-inventory') {
+            expect($dependency)->not->toStartWith('elgibor-solution/laravel-inventory-');
+        }
+    }
+
+    $siblingNamespaces = [
+        'ESolution\\InventoryRetail\\',
+        'ESolution\\InventoryWms\\',
+        'ESolution\\InventoryManufacturing\\',
+        'ESolution\\InventoryHealthcare\\',
+        'ESolution\\InventoryFood\\',
+        'ESolution\\InventoryAsset\\',
+        'ESolution\\InventoryAutomotive\\',
+        'ESolution\\InventoryLibrary\\',
+    ];
+    foreach (inventoryPhpFiles($projectRoot . '/src') as $file) {
+        $source = file_get_contents($file);
+        expect($source)->toContain('namespace ESolution\\InventoryProject');
+        foreach ($siblingNamespaces as $namespace) {
+            expect($source)->not->toContain($namespace, "Project file {$file} imports sibling {$namespace}");
+        }
+        expect($source)->not->toContain('DocumentTypeDefinition')
+            ->and($source)->not->toContain('implements MovementPolicy')
+            ->and($source)->not->toContain('implements CostingDriver')
+            ->and($source)->not->toContain('StockLedger::create')
+            ->and($source)->not->toContain('CostLayer::create');
+    }
+
+    foreach (inventoryPhpFiles($projectRoot . '/database/migrations') as $file) {
+        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $matches);
+        foreach ($matches[1] as $table) {
+            expect($table)->toStartWith('invp_');
+        }
+    }
+});

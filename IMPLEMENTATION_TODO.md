@@ -500,28 +500,28 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Implement ProjectAllocation with polymorphic Project reference, Core Site/warehouse, Item, and one Reservation.
-- [ ] **P1** Implement replenishment as a new allocation/reservation, never reservation mutation.
-- [ ] **P1** Implement reallocation as atomic source release plus destination allocation.
-- [ ] **P1** Implement partial material draw via existing Goods Issue/Transfer and exact reservation-consumption linkage.
-- [ ] **P1** Implement reporting from stored reservation quantities/consumption links rather than approximate unrelated ledger inference.
-- [ ] **P1** Publish no sector preset and add no new movement/costing/document contract.
+- [x] **P1** Implement ProjectAllocation with polymorphic Project reference, Core Site/warehouse, Item, and one Reservation.
+- [x] **P1** Implement replenishment as a new allocation/reservation, never reservation mutation.
+- [x] **P1** Implement reallocation as atomic source release plus destination allocation.
+- [x] **P1** Implement partial material draw via existing Goods Issue/Transfer and exact reservation-consumption linkage.
+- [x] **P1** Implement reporting from stored reservation quantities/consumption links rather than approximate unrelated ledger inference.
+- [x] **P1** Publish no sector preset and add no new movement/costing/document contract.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC11-01** Allocation creates one matching reservation.
-- [ ] **AC11-02** Site uses Core hierarchy without new organization level.
-- [ ] **AC11-03** Replenishment creates a separate allocation.
-- [ ] **AC11-04** Reallocation is explicit, atomic, and balance-safe.
-- [ ] **AC11-05** Partial draw consumes exact remaining reservation.
-- [ ] **AC11-06** Reporting totals allocated/consumed/remaining exactly.
-- [ ] **AC11-07** No new stock movement/costing behavior is introduced.
-- [ ] **AC11-08** No sector preset is published.
-- [ ] **AC11-09** Project has no sibling dependency and works with bridges disabled.
+- [x] **AC11-01** Allocation creates one matching reservation.
+- [x] **AC11-02** Site uses Core hierarchy without new organization level.
+- [x] **AC11-03** Replenishment creates a separate allocation.
+- [x] **AC11-04** Reallocation is explicit, atomic, and balance-safe.
+- [x] **AC11-05** Partial draw consumes exact remaining reservation.
+- [x] **AC11-06** Reporting totals allocated/consumed/remaining exactly.
+- [x] **AC11-07** No new stock movement/costing behavior is introduced.
+- [x] **AC11-08** No sector preset is published.
+- [x] **AC11-09** Project has no sibling dependency and works with bridges disabled.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-11** AC11-01–AC11-09 and allocation concurrency tests pass.
+- [x] **P1 GATE-11** AC11-01–AC11-09 and allocation concurrency tests pass.
 
 ---
 

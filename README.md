@@ -105,6 +105,12 @@ The optional Asset vertical is developed as the independent
 portable active-allocation protection, Reservation-based loans, derived overdue
 notification, and the documented Core serial-status limitation.
 
+The optional Project vertical is developed as the independent
+`elgibor-solution/laravel-inventory-project` package under `packages/project`.
+See [Project package documentation](packages/project/README.md) for exact
+Reservation-backed allocations, replenishment, atomic reallocation, partial
+material draw, and allocation reporting without new stock behavior or presets.
+
 ## Posting example
 
 ```php

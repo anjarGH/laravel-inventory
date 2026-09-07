@@ -16,6 +16,8 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/packages/manufacturing/config',
         __DIR__ . '/packages/manufacturing/database/migrations',
         __DIR__ . '/packages/manufacturing/src',
+        __DIR__ . '/packages/project/database/migrations',
+        __DIR__ . '/packages/project/src',
         __DIR__ . '/packages/retail/config',
         __DIR__ . '/packages/retail/database/migrations',
         __DIR__ . '/packages/retail/src',
