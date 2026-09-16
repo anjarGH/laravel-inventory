@@ -8,6 +8,7 @@ parameters:
         maximumNumberOfProcesses: 1
     paths:
         - src
+        - packages/automotive/src
         - packages/asset/src
         - packages/food/src
         - packages/healthcare/src

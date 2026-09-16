@@ -3,6 +3,8 @@
 $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/config',
+        __DIR__ . '/packages/automotive/config',
+        __DIR__ . '/packages/automotive/src',
         __DIR__ . '/database/migrations',
         __DIR__ . '/packages/asset/config',
         __DIR__ . '/packages/asset/database/migrations',

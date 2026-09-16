@@ -8,6 +8,7 @@ use ESolution\Inventory\Models\Batch;
 use ESolution\Inventory\Models\Certificate;
 use ESolution\Inventory\Models\CostLayer;
 use ESolution\Inventory\Models\Item;
+use ESolution\Inventory\Models\Serial;
 use Illuminate\Database\Eloquent\Builder;
 
 final class TrackingPolicy
@@ -43,10 +44,25 @@ final class TrackingPolicy
             return;
         }
 
+        if ($direction !== 'out') {
+            return;
+        }
         if (($tracking['serial_required_on_issue'] ?? false) && $line->serialId === null) {
             throw new \DomainException('Tracked Item issue requires a serial.');
         }
 
+        foreach ((array) ($tracking['required_serial_certificates_on_issue'] ?? []) as $type) {
+            $serial = $line->serialId === null ? null : Serial::query()->findOrFail($line->serialId);
+            if ($serial === null || ! Certificate::query()
+                ->where('trackable_type', $serial->getMorphClass())
+                ->where('trackable_id', $serial->getKey())
+                ->where('type', $type)
+                ->where(fn(Builder $q) => $q->whereNull('issued_at')->orWhereDate('issued_at', '<=', $trxDate->toDateString()))
+                ->where(fn(Builder $q) => $q->whereNull('expires_at')->orWhereDate('expires_at', '>=', $trxDate->toDateString()))
+                ->exists()) {
+                throw new \DomainException("Serial requires a valid {$type} certificate for issue.");
+            }
+        }
         if ($batch === null) {
             return;
         }

@@ -175,6 +175,11 @@ final class PostingEngine
             return;
         }
 
+        $guard = $this->documentTypes->get($document->document_type)->beforePosting;
+        if ($guard !== null) {
+            $guard($document);
+        }
+
         $document->forceFill([
             'posting_started_at' => now(),
             'posting_marker' => 'document:' . $document->getKey(),

@@ -113,6 +113,11 @@ material draw, and allocation reporting without new stock behavior or presets.
 
 ## Posting example
 
+The optional Automotive package under `packages/automotive` provides serial
+Compliance tracking, ordinary Core work-order parts issues, and usage reporting.
+See [Automotive documentation](packages/automotive/README.md) for external
+references and the fail-closed accounting decision.
+
 ```php
 use ESolution\Inventory\DTO\DocumentData;
 use ESolution\Inventory\DTO\LineData;

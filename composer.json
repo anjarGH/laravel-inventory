@@ -15,6 +15,7 @@
     "psr-4": {
       "ESolution\\Inventory\\Tests\\": "tests/",
       "ESolution\\InventoryAsset\\": "packages/asset/src/",
+      "ESolution\\InventoryAutomotive\\": "packages/automotive/src/",
       "ESolution\\InventoryFood\\": "packages/food/src/",
       "ESolution\\InventoryHealthcare\\": "packages/healthcare/src/",
       "ESolution\\InventoryManufacturing\\": "packages/manufacturing/src/",

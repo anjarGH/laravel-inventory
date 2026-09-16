@@ -532,26 +532,26 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Publish Automotive preset for serial and Compliance certificate.
-- [ ] **P1** Register `work_order_parts_issue` as a naming-only specialization of ordinary Goods Issue.
-- [ ] **P1** Store Work Order/vehicle references polymorphically; do not own their schemas.
-- [ ] **P1** Implement part usage reporting by Work Order/vehicle/item/serial.
-- [ ] **P1** Add indexes only after validating report query plans.
-- [ ] **P0 BLOCKER** Verify Automotive service-code coverage before enabling Accounting Bridge; otherwise fail closed.
+- [x] **P1** Publish Automotive preset for serial and Compliance certificate.
+- [x] **P1** Register `work_order_parts_issue` as a naming-only specialization of ordinary Goods Issue.
+- [x] **P1** Store Work Order/vehicle references polymorphically; do not own their schemas.
+- [x] **P1** Implement part usage reporting by Work Order/vehicle/item/serial.
+- [x] **P1** Add indexes only after validating report query plans.
+- [x] **P0 BLOCKER** Verify Automotive service-code coverage before enabling Accounting Bridge; otherwise fail closed.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC12-01** Automotive preset merges correctly.
-- [ ] **AC12-02** Work-order issue reuses ordinary Goods Issue behavior.
-- [ ] **AC12-03** No duplicate movement/costing implementation exists.
-- [ ] **AC12-04** Work Order/vehicle references remain external and polymorphic.
-- [ ] **AC12-05** Part usage reports trace item/serial to source work.
-- [ ] **AC12-06** Accounting enablement is blocked without verified mapping.
-- [ ] **AC12-07** Automotive has no sibling dependency and works with bridges disabled.
+- [x] **AC12-01** Automotive preset merges correctly.
+- [x] **AC12-02** Work-order issue reuses ordinary Goods Issue behavior.
+- [x] **AC12-03** No duplicate movement/costing implementation exists.
+- [x] **AC12-04** Work Order/vehicle references remain external and polymorphic.
+- [x] **AC12-05** Part usage reports trace item/serial to source work.
+- [x] **AC12-06** Accounting enablement is blocked without verified mapping.
+- [x] **AC12-07** Automotive has no sibling dependency and works with bridges disabled.
 
 ### Exit Gate
 
-- [ ] **P1 GATE-12** AC12-01–AC12-07 pass; accounting decision is verified or explicitly fail-closed.
+- [x] **P1 GATE-12** AC12-01–AC12-07 pass; accounting decision is verified or explicitly fail-closed.
 
 ---
 
