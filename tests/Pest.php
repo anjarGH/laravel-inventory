@@ -10,6 +10,7 @@ use ESolution\Inventory\Tests\TestCase;
 use ESolution\Inventory\Tests\WmsTestCase;
 
 uses(TestCase::class)->in('Feature');
+uses(\ESolution\Inventory\Tests\LibraryTestCase::class)->in('LibraryFeature');
 uses(\ESolution\Inventory\Tests\AutomotiveTestCase::class)->in('AutomotiveFeature');
 uses(AssetTestCase::class)->in('AssetFeature');
 uses(FoodTestCase::class)->in('FoodFeature');

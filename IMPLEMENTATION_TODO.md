@@ -562,30 +562,33 @@
 
 ### Design, Schema, and Implementation
 
-- [ ] **P1** Publish Library preset with per-copy serial tracking.
-- [ ] **P1** Implement Circulation records wrapping one Core Reservation per copy/patron loan.
-- [ ] **P0 PATCH-CHECKOUT** Lock Serial and enforce one active allocation per copy at database level during checkout.
-- [ ] **P1** Implement check-in/release, renewals, derived overdue status, and fines as non-ledger domain records where specified.
-- [ ] **P1** Implement Hold queue without reserving stock while waiting.
-- [ ] **P0** Implement atomic `fulfillNextHold` with queue-row locks, deterministic ordering, expiry handling, and duplicate-fulfillment protection.
-- [ ] **P1** Share no runtime code/dependency with Asset; duplicate only the independently specified composition pattern.
+- [x] **P1** Publish Library preset with per-copy serial tracking.
+- [x] **P1** Implement Circulation records wrapping one Core Reservation per copy/patron loan.
+- [x] **P0 PATCH-CHECKOUT** Lock Serial and enforce one active allocation per copy at database level during checkout.
+- [x] **P1** Implement check-in/release, renewals, derived overdue status, and fines as non-ledger domain records where specified.
+- [x] **P1** Implement Hold queue without reserving stock while waiting.
+- [x] **P0** Implement atomic `fulfillNextHold` with queue-row locks, deterministic ordering, expiry handling, and duplicate-fulfillment protection.
+- [x] **P1** Share no runtime code/dependency with Asset; duplicate only the independently specified composition pattern.
 
 ### Tests and Acceptance Criteria
 
-- [ ] **AC13-01** Library preset enables per-copy tracking.
-- [ ] **AC13-02** Checkout creates circulation and reservation for one copy.
-- [ ] **AC13-03** Check-in releases availability without ledger effects.
-- [ ] **AC13-04** Concurrent checkout cannot loan one copy twice.
-- [ ] **AC13-05** Waiting Holds do not reduce Core availability.
-- [ ] **AC13-06** Hold queue ordering and ready transition are deterministic.
-- [ ] **AC13-07** Expired ready Hold advances the queue exactly once.
-- [ ] **AC13-08** Concurrent check-in/expiry cannot double-fulfill a Hold.
-- [ ] **AC13-09** Overdue/fine behavior remains outside stock ledger.
-- [ ] **AC13-10** Library has no Asset/sibling dependency and works with bridges disabled.
+- [x] **AC13-01** Library preset enables per-copy tracking.
+- [x] **AC13-02** Checkout creates circulation and reservation for one copy.
+- [x] **AC13-03** Check-in releases availability without ledger effects.
+- [x] **AC13-04** Concurrent checkout cannot loan one copy twice.
+- [x] **AC13-05** Waiting Holds do not reduce Core availability.
+- [x] **AC13-06** Hold queue ordering and ready transition are deterministic.
+- [x] **AC13-07** Expired ready Hold advances the queue exactly once.
+- [x] **AC13-08** Concurrent check-in/expiry cannot double-fulfill a Hold.
+- [x] **AC13-09** Overdue/fine behavior remains outside stock ledger.
+- [x] **AC13-10** Library has no Asset/sibling dependency and works with bridges disabled.
 
 ### Exit Gate
 
-- [ ] **P0 GATE-13** AC13-01–AC13-10 and circulation/hold concurrency tests pass.
+- [x] **P0 GATE-13** AC13-01–AC13-10 and circulation/hold concurrency tests pass.
+
+Validation: 9 Library tests / 127 assertions, including independent PHP workers sharing SQLite.
+Production MySQL/PostgreSQL row-lock behavior still requires deployment-environment verification.
 
 ---
 

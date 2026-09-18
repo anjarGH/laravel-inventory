@@ -3,6 +3,9 @@
 $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/config',
+        __DIR__ . '/packages/library/config',
+        __DIR__ . '/packages/library/src',
+        __DIR__ . '/packages/library/database/migrations',
         __DIR__ . '/packages/automotive/config',
         __DIR__ . '/packages/automotive/src',
         __DIR__ . '/database/migrations',
@@ -28,6 +31,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/packages/wms/src',
         __DIR__ . '/src',
         __DIR__ . '/tests',
+        __DIR__ . '/tools',
     ])
     ->append([__FILE__]);
 
