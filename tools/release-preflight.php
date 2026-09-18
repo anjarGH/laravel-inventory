@@ -6,7 +6,7 @@ $checklist = file_get_contents($root . '/IMPLEMENTATION_TODO.md');
 $blockers = [];
 foreach (preg_split('/\R/', $checklist) as $line) {
     if (preg_match('/^- \[ \] /', $line)
-        && preg_match('/\*\*(?:P0\b|AC\d|ACG-|.*GATE-|BLOCK-)/', $line)) {
+        && preg_match('/\*\*(?:P0\b|AC(?:\d|-)|ACG-|.*GATE-|BLOCK-)/', $line)) {
         $blockers[] = $line;
     }
 }

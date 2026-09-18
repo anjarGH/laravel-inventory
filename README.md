@@ -111,8 +111,6 @@ See [Project package documentation](packages/project/README.md) for exact
 Reservation-backed allocations, replenishment, atomic reallocation, partial
 material draw, and allocation reporting without new stock behavior or presets.
 
-## Posting example
-
 The independent [Library package](packages/library/README.md) provides
 per-copy circulation, reservation-backed ready Holds, renewals, derived overdue,
 and fine records. Waiting Holds do not reserve stock.
@@ -121,6 +119,8 @@ The optional Automotive package under `packages/automotive` provides serial
 Compliance tracking, ordinary Core work-order parts issues, and usage reporting.
 See [Automotive documentation](packages/automotive/README.md) for external
 references and the fail-closed accounting decision.
+
+## Posting example
 
 ```php
 use ESolution\Inventory\DTO\DocumentData;
@@ -155,10 +155,17 @@ additionalJournalLines: [
 
 ## Development checks
 
+This is an unreleased development baseline. See the
+[ecosystem installation and release runbook](docs/ECOSYSTEM_RELEASE.md),
+[generated API/schema reference](docs/SOURCE_REFERENCE.md), and
+[known release blockers](docs/RELEASE_NOTES.md). Passing implemented tests does
+not mean open TODO tests or the production release matrix are complete.
+
 ```bash
 composer check
 composer audit
 composer validate --strict
+composer release:preflight
 ```
 
 The fresh baseline migrations are intended for new installations. Migration of

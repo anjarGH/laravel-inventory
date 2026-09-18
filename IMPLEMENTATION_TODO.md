@@ -599,7 +599,13 @@ Production MySQL/PostgreSQL row-lock behavior still requires deployment-environm
 
 ### Integration Matrix
 
-- [ ] **P0** Test Core alone with both bridges absent.
+Phase 14 local evidence: `Phase14EcosystemTest` covers 17 SQLite installation/
+coexistence smoke cases, not combined domain workflows or real external bridges.
+`Phase14CatalogTest` covers the complete catalog's dependency and migration/table
+name collisions. See `docs/ECOSYSTEM_RELEASE.md` and `docs/RELEASE_NOTES.md` for
+remaining release evidence; unchecked requirements below are intentionally open.
+
+- [x] **P0** Test Core alone with both bridges absent.
 - [ ] **P0** Test Core with Accounting only, Approval only, and both enabled.
 - [ ] **P1** Test each vertical independently against Core.
 - [ ] **P1** Test representative combinations: Retail+Manufacturing, Healthcare+Retail/Consignment, WMS+Healthcare, Food+WMS, Asset+Project, Library+Retail.
@@ -616,11 +622,11 @@ Production MySQL/PostgreSQL row-lock behavior still requires deployment-environm
 
 ### Documentation and Release
 
-- [ ] **P0** Rewrite README for the greenfield architecture and remove legacy internal-journal claims/examples.
+- [x] **P0** Rewrite README for the greenfield architecture and remove legacy internal-journal claims/examples.
 - [ ] **P1** Document installation, package combinations, public API, config, commands, events, contracts, database ownership, and troubleshooting.
-- [ ] **P1** Publish migration/schema reference and generated API documentation.
-- [ ] **P1** Record known limitations and fail-closed modules explicitly in release notes.
-- [ ] **P0** Block release while any P0 task, MVP AC, required gate, or blocker for an enabled feature is open.
+- [x] **P1** Publish migration/schema reference and generated API documentation.
+- [x] **P1** Record known limitations and fail-closed modules explicitly in release notes.
+- [x] **P0** Block release while any P0 task, MVP AC, required gate, or blocker for an enabled feature is open. (`composer release:preflight`; tag CI rejects open blockers, no publishing automation.)
 - [ ] **P1** Tag release only after clean install from an empty database and the complete release matrix succeeds.
 
 ### Final Acceptance Gates

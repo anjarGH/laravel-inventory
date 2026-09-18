@@ -1,6 +1,7 @@
 # Supported Versions and CI Matrix
 
-The package's declared runtime range is validated with the following matrix.
+The package declares the following target CI matrix. A configured row is not proof
+of a successful run; retain actual CI results before claiming release compatibility.
 
 | Laravel | PHP | Orchestra Testbench | Pest | Larastan |
 |---|---|---|---|---|
@@ -17,4 +18,3 @@ in the integration pipeline before GA.
 The oldest supported Laravel/PHP pair receives security and compatibility fixes.
 New framework majors are added only after their matrix row is green. Unsupported
 rows must be removed from both Composer constraints and this document together.
-
