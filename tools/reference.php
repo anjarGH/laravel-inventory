@@ -9,8 +9,8 @@ foreach (array_merge([$root], glob($root . '/packages/*', GLOB_ONLYDIR)) as $dir
     $output .= "\n## {$label}\n\n### Migrations\n\n";
     foreach (glob($directory . '/database/migrations/*.php') as $file) {
         $relative = str_replace('\\', '/', substr($file, strlen($root) + 1));
-        preg_match_all("/Schema::create\\('([^']+)'/", file_get_contents($file), $tables);
-        $output .= '- [' . basename($file) . '](../' . $relative . '): ' . implode(', ', $tables[1]) . "\n";
+        preg_match_all("/Schema::(?:create|table)\\('([^']+)'/", file_get_contents($file), $tables);
+        $output .= '- [' . basename($file) . '](../' . $relative . '): ' . implode(', ', array_unique($tables[1])) . "\n";
     }
     $output .= "\n### Services and contracts\n\n";
     foreach (['Services', 'Contracts'] as $folder) {

@@ -1,5 +1,13 @@
 # Unreleased baseline
 
+## Tenda integration prerequisites
+
+- Added standard untracked FIFO warehouse transfer and linked exact-cost reversal.
+- Added item-level serialization with ordinary posting and a unique reversal index.
+- Added rollback, retry, costing and opt-in real-database concurrency scenarios.
+- See [supported scope and testing](TRANSFER_REVERSAL.md); this does not close the
+  general release gate or implement tracked/bridge-enabled transfer and reversal.
+
 ## Phase 14 additions
 
 - SQLite installation/coexistence matrix: Core, nine verticals, six representative
@@ -13,8 +21,8 @@
 
 The authoritative register is [IMPLEMENTATION_TODO](../IMPLEMENTATION_TODO.md).
 Phase 14 is not complete and RELEASE-GATE remains open. Existing Core TODO tests
-include after-commit events, real database races, constraints and unimplemented
-standard document orchestration. Passing implemented tests does not close TODOs.
+include after-commit events, broader real database races, constraints and stock-count
+variance orchestration. Passing implemented tests does not close TODOs.
 
 External Accounting service coverage for Manufacturing, Food and Automotive,
 Approval rejection decisions, real bridge combinations, database/version matrices,

@@ -15,6 +15,7 @@ Schema details (columns, indexes, FKs) remain authoritative in linked migrations
 - [2026_08_31_000004_create_inv_document_tables.php](../database/migrations/2026_08_31_000004_create_inv_document_tables.php): inv_documents, inv_document_lines, inv_audit_trails
 - [2026_08_31_000005_create_inv_ledger_tables.php](../database/migrations/2026_08_31_000005_create_inv_ledger_tables.php): inv_cost_layers, inv_stock_ledgers, inv_stock_cards, inv_cost_adjustments
 - [2026_08_31_000006_create_inv_control_tables.php](../database/migrations/2026_08_31_000006_create_inv_control_tables.php): inv_reservations, inv_reservation_consumptions, inv_stock_locks, inv_policy_overrides
+- [2026_09_30_000007_add_unique_inventory_reversal.php](../database/migrations/2026_09_30_000007_add_unique_inventory_reversal.php): inv_documents
 
 ### Services and contracts
 
@@ -28,6 +29,8 @@ Schema details (columns, indexes, FKs) remain authoritative in linked migrations
   - `all(): array`
 - [ESolution\Inventory\Services\InventoryManager](../src/Services/InventoryManager.php)
   - `post(ESolution\Inventory\DTO\DocumentData $data): ESolution\Inventory\Models\Document`
+  - `transfer(ESolution\Inventory\DTO\TransferData $data): ESolution\Inventory\Models\Document`
+  - `reverse(ESolution\Inventory\DTO\ReversalRequest $request): ESolution\Inventory\Models\Document`
   - `resumeApproved(int $documentId): ESolution\Inventory\Models\Document`
   - `reserve(int $itemId, float $qty, int $warehouseId, string $sourceType, string $sourceId): ESolution\Inventory\Models\Reservation`
   - `release(int $id, ?float $qty [optional]): ESolution\Inventory\Models\Reservation`
@@ -57,6 +60,9 @@ Schema details (columns, indexes, FKs) remain authoritative in linked migrations
 - [ESolution\Inventory\Services\TrackingPolicy](../src/Services/TrackingPolicy.php)
   - `validateLine(ESolution\Inventory\Models\Item $item, ?ESolution\Inventory\Models\Batch $batch, string $direction, ESolution\Inventory\DTO\LineData $line, Carbon\CarbonInterface $trxDate): void`
   - `prepareIssueLayers(Illuminate\Database\Eloquent\Builder $query, ESolution\Inventory\Models\Item $item, Carbon\CarbonInterface $trxDate): Illuminate\Database\Eloquent\Builder`
+- [ESolution\Inventory\Services\TransferReversalService](../src/Services/TransferReversalService.php)
+  - `transfer(ESolution\Inventory\DTO\TransferData $data): ESolution\Inventory\Models\Document`
+  - `reverse(ESolution\Inventory\DTO\ReversalRequest $request): ESolution\Inventory\Models\Document`
 - [ESolution\Inventory\Services\WorkflowEngine](../src/Services/WorkflowEngine.php)
   - `transition(ESolution\Inventory\Models\Document $document, ESolution\Inventory\Enums\DocumentStatus $to, array $actor [optional]): void`
   - `onTransition(string $type, callable $hook): void`

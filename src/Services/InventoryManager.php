@@ -3,7 +3,9 @@
 namespace ESolution\Inventory\Services;
 
 use ESolution\Inventory\DTO\DocumentData;
+use ESolution\Inventory\DTO\ReversalRequest;
 use ESolution\Inventory\DTO\StockAvailability;
+use ESolution\Inventory\DTO\TransferData;
 use ESolution\Inventory\Models\Document;
 use ESolution\Inventory\Models\Reservation;
 
@@ -14,11 +16,22 @@ final class InventoryManager
         private readonly ReservationService $reservations,
         private readonly ResumeApprovedDocument $approvalResume,
         private readonly StockAvailabilityService $availability,
+        private readonly TransferReversalService $movements,
     ) {}
 
     public function post(DocumentData $data): Document
     {
         return $this->posting->post($data);
+    }
+
+    public function transfer(TransferData $data): Document
+    {
+        return $this->movements->transfer($data);
+    }
+
+    public function reverse(ReversalRequest $request): Document
+    {
+        return $this->movements->reverse($request);
     }
 
     public function resumeApproved(int $documentId): Document

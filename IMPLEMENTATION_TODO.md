@@ -123,6 +123,7 @@
 - [x] **P0** Implement allowed state transitions and immutable status audit entries.
 - [ ] **P0** Implement posting order: validate → approval gate → costing → movement ledger → accounting trigger → Stock Card → Posted.
 - [ ] **P0** Implement reversal as a new linked document; reject edits/deletes to posted ledger effects.
+- [x] **Tenda prerequisite scope** Implement atomic untracked standard FIFO warehouse transfer and exact-layer linked reversal with bridges disabled; verify rollback, retry, value conservation and concurrent requests on MariaDB with a table prefix. See `docs/TRANSFER_REVERSAL.md` for exclusions. This does not close the general reversal or release gate.
 - [x] **P0 PATCH-RESUME** Implement `ResumeApprovedDocument` service/job that locks the document, checks approval/posting markers, resumes at costing exactly once, and safely no-ops on duplicate delivery.
 - [ ] **P0 PATCH-RESUME** Add unique posting-completion protection and concurrency tests for two workers resuming the same approved document.
 - [ ] **P1** Dispatch domain events only after commit and register deterministic veto/transition hooks.

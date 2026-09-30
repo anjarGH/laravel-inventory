@@ -47,6 +47,8 @@ final class PostingEngine
         $hash = $this->payloadHash($data);
 
         return DB::transaction(function () use ($data, $hash): Document {
+            Item::query()->whereIn('id', array_map(fn(LineData $line): int => $line->itemId, $data->lines))
+                ->orderBy('id')->lockForUpdate()->get();
             $existing = $this->findIdempotentDocument($data);
             if ($existing !== null) {
                 if (! hash_equals((string) $existing->idempotency_hash, $hash)) {
@@ -186,6 +188,9 @@ final class PostingEngine
         ])->save();
 
         $stockLines = [];
+        // Serialize stock mutations with transfers/reversals, including empty scopes.
+        Item::query()->whereIn('id', $document->lines()->select('item_id'))
+            ->orderBy('id')->lockForUpdate()->get();
         $hasOwnershipNeutralReceipt = false;
         $hasOwnedReceipt = false;
         foreach (DocumentLine::query()->where('document_id', $document->getKey())->orderBy('line_no')->get() as $line) {

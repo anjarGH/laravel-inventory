@@ -155,6 +155,10 @@ additionalJournalLines: [
 
 ## Development checks
 
+For atomic standard FIFO warehouse transfers and exact-cost corrections, see
+[Transfer and reversal](docs/TRANSFER_REVERSAL.md). These operations currently
+support untracked stock with Accounting and Approval bridges disabled.
+
 This is an unreleased development baseline. See the
 [ecosystem installation and release runbook](docs/ECOSYSTEM_RELEASE.md),
 [generated API/schema reference](docs/SOURCE_REFERENCE.md), and

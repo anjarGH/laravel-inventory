@@ -64,7 +64,13 @@ test('AC-04 posted ledger entries reject mutation', function (): void {
         ->toThrow(LogicException::class);
 });
 
-test('AC-04 correction is represented by a linked reversal document')->todo('Reversal service is not implemented.');
+test('AC-04 correction is represented by a linked reversal document', function (): void {
+    $receipt = $this->postReceipt();
+    $reversal = app(InventoryManager::class)->reverse(new \ESolution\Inventory\DTO\ReversalRequest($receipt->id, 'Correction'));
+    expect((int) $reversal->reversal_of_id)->toBe((int) $receipt->id)
+        ->and($reversal->reversal_reason)->toBe('Correction')
+        ->and($receipt->fresh()->status->value)->toBe('reversed');
+});
 
 test('AC-05 document creation is idempotent and rejects payload conflict', function (): void {
     $first = $this->postReceipt(2, 7, externalId: 'AC05-GR');

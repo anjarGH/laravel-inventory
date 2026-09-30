@@ -12,6 +12,10 @@ trait BuildsInventoryScenario
 {
     protected function installInventorySchema(): void
     {
+        if (getenv('INVENTORY_TEST_DATABASE')) {
+            // TestCase validates the dedicated database name before this destructive test reset.
+            $this->artisan('migrate:fresh', ['--database' => 'testing'])->assertSuccessful();
+        }
         $this->artisan('migrate', ['--database' => 'testing'])->assertSuccessful();
 
         DB::table('inv_organizations')->insert([
